@@ -19,6 +19,7 @@ cslog('Notifications module loaded');
 
 const MOCK_CONN = true;     /* Mock connection */
 let NOTIFICATIONS = [];    /* Array of notifications */
+const NOTIF_STATUS = ["new", "in-progress", "completed", "failed", "canceled"];
 
 
 function get_random_jid() {
@@ -176,29 +177,35 @@ function get_notification(NOTIF_ID = undefined, JID = undefined) {
     }
 }
 
+function _update_notification_status(notification) {
+    /* Update the status of a notification */
+    let new_status = prompt('Enter the new status:\n' + NOTIF_STATUS.join('\n'));
+    if (NOTIF_STATUS.includes(new_status.toLowerCase())) {
+        notification.status = new_status.toLowerCase();
+        return true;
+    } else {
+        customAlert('Invalid status');
+        return false;
+    }
+}
+
 
 function update_notification_status_by_ID(NOTIF_ID) {
     /* Update the status of a notification by ID */
-    let index = NOTIFICATIONS.findIndex(notification => notification.ID === NOTIF_ID);
-    if (index > -1) {
-        let new_status = prompt('Enter the new status: new, in-progress, completed');
-        NOTIFICATIONS[index].status = new_status;
-        return true;
+    notification = get_notification_by_ID(NOTIF_ID);
+    if (notification) {
+        return _update_notification_status(notification);
     } else {
-        customAlert(`Notification NOTIF_ID ${NOTIF_ID} not found`);
         return false;
     }
 }
 
 function update_notification_status_by_JID(JID) {
     /* Update the status of a notification by JID */
-    let index = NOTIFICATIONS.findIndex(notification => notification.JID === JID);
-    if (index > -1) {
-        let new_status = prompt('Enter the new status: new, in-progress, completed');
-        NOTIFICATIONS[index].status = new_status;
-        return true;
+    notification = get_notification_by_JID(JID);
+    if (notification) {
+        return _update_notification_status(notification);
     } else {
-        customAlert(`Notification JID ${JID} not found`);
         return false;
     }
 }
@@ -251,6 +258,7 @@ function menu_notifications_actions() {
         'View notification by JID_ID - Ex: JID-99999',
         'Delete notification by NOTIF_ID - Ex: NOTIF_ID-0000000', 
         'Delete notification by JID_ID - Ex: JID-99999',
+        'Update notification status by NOTIF_ID - Ex: NOTIF_ID-0000000',
         'Update notification status by JID_ID - Ex: JID-99999'
     ]
    let menu_items_msg = "";
@@ -338,6 +346,18 @@ async function show_menu() {
                 break;
                 
             case 7:
+                /* Update notification status by NOTIF_ID */
+                NOTIF_ID = prompt('Enter the NOTIF_ID to update notification status');
+                update = update_notification_status(NOTIF_ID, undefined);
+                if (update) {
+                    customAlert('Notification updated');
+                } else {
+                    customAlert('Notification NOT updated');
+                }
+                _lp_flag = confirm('Do you want to continue managing notifications ?');
+                break;
+
+            case 8:
                 /* Update notification status by JID */
                 JID = prompt('Enter the JID to update notification status');
                 update = update_notification_status(undefined, JID);
@@ -348,6 +368,7 @@ async function show_menu() {
                 }
                 _lp_flag = confirm('Do you want to continue managing notifications ?');
                 break;
+
             default:
                 alert('Wrong option');
                 _lp_flag = confirm('Do you want to continue managing notifications ?');
