@@ -41,7 +41,9 @@ if (MOCK_CONN) {
         { ID: "NOTIF_ID-9999999", JID: "JID-99999", status: "new", consumer: "192.168.1.1" },
         { ID: get_random_notification_id(), JID: get_random_jid(), status: "new", consumer: "192.168.1.1" },
         { ID: get_random_notification_id(), JID: get_random_jid(), status: "in-progress", consumer: "192.168.1.2" },
-        { ID: get_random_notification_id(), JID: get_random_jid(), status: "completed", consumer: "192.168.1.3" }
+        { ID: get_random_notification_id(), JID: get_random_jid(), status: "completed", consumer: "192.168.1.3" },
+        { ID: get_random_notification_id(), JID: get_random_jid(), status: "failed", consumer: "192.168.1.4" },
+        { ID: get_random_notification_id(), JID: get_random_jid(), status: "canceled", consumer: "192.168.1.4" }
     ];     /* Array of notifications */    
 }
 
@@ -87,11 +89,7 @@ async function create_notification() {
     return notification;
 }
 
-
 cslog('Notifications: ' + get_notifications());
-
-/* Create a new notification */
-// let notification_id = create_notification();
 
 
 /* Delete a notification by NOTIF_ID */
@@ -115,8 +113,10 @@ function delete_notification_by_ID(NOTIF_ID) {
     }
 
 }
+
+
 function delete_notification_by_JID(JID) {
-    /* Delete a notification by ID */
+    /* Delete a notification by JID */
     let index = NOTIFICATIONS.findIndex(notification => notification.JID === JID);
     if (index > -1) {
         let delete_confirm = confirm('Do you want to delete the notification: ' + JSON.stringify(NOTIFICATIONS[index]));
@@ -136,6 +136,7 @@ function delete_notification_by_JID(JID) {
 }
 
 function delete_notification(NOTIF_ID = undefined, JID = undefined) {
+    /* Delete a notification by NOTIF_ID or JID */
     if (NOTIF_ID !== undefined) {
         return delete_notification_by_ID(NOTIF_ID);
     } else if (JID !== undefined) {
@@ -166,11 +167,49 @@ function get_notification_by_JID(JID) {
     }
 }
 
-function view_notification(NOTIF_ID = undefined, JID = undefined) {
+function get_notification(NOTIF_ID = undefined, JID = undefined) {
+    /* Get a notification by NOTIF_ID or JID */
     if (NOTIF_ID !== undefined) {
         return get_notification_by_ID(NOTIF_ID);
     } else if (JID !== undefined) {
-        return  get_notification_by_JID(JID);
+        return get_notification_by_JID(JID);
+    }
+}
+
+
+function update_notification_status_by_ID(NOTIF_ID) {
+    /* Update the status of a notification by ID */
+    let index = NOTIFICATIONS.findIndex(notification => notification.ID === NOTIF_ID);
+    if (index > -1) {
+        let new_status = prompt('Enter the new status: new, in-progress, completed');
+        NOTIFICATIONS[index].status = new_status;
+        return true;
+    } else {
+        customAlert(`Notification NOTIF_ID ${NOTIF_ID} not found`);
+        return false;
+    }
+}
+
+function update_notification_status_by_JID(JID) {
+    /* Update the status of a notification by JID */
+    let index = NOTIFICATIONS.findIndex(notification => notification.JID === JID);
+    if (index > -1) {
+        let new_status = prompt('Enter the new status: new, in-progress, completed');
+        NOTIFICATIONS[index].status = new_status;
+        return true;
+    } else {
+        customAlert(`Notification JID ${JID} not found`);
+        return false;
+    }
+}
+
+
+function update_notification_status(NOTIF_ID = undefined, JID = undefined) {
+    /* Update the status of a notification by NOTIF_ID or JID */
+    if (NOTIF_ID !== undefined) {
+        return update_notification_status_by_ID(NOTIF_ID);
+    } else if (JID !== undefined) {
+        return update_notification_status_by_JID(JID);
     }
 }
 
@@ -259,7 +298,7 @@ async function show_menu() {
             case 3:
                 /* View notification by NOTIF_ID */
                 NOTIF_ID = prompt('Enter the NOTIF_ID');
-                notification = view_notification(NOTIF_ID, undefined);
+                notification = get_notification(NOTIF_ID, undefined);
                 cslog('Menu Option 3: ' + JSON.stringify(notification));
                 customAlert('Notification: ' + JSON.stringify(notification));
                 _lp_flag = confirm('Do you want to continue managing notifications ?');
@@ -268,7 +307,7 @@ async function show_menu() {
             case 4:
                 /* View notification by JID */
                 JID = prompt('Enter the JID');
-                notification = view_notification(undefined, JID);
+                notification = get_notification(undefined, JID);
                 cslog('Menu Option 4: ' + JSON.stringify(notification));
                 customAlert('Notification: ' + JSON.stringify(notification));
                 _lp_flag = confirm('Do you want to continue managing notifications ?');
@@ -301,7 +340,7 @@ async function show_menu() {
             case 7:
                 /* Update notification status by JID */
                 JID = prompt('Enter the JID to update notification status');
-                update = update_notification(undefined, JID);
+                update = update_notification_status(undefined, JID);
                 if (update) {
                     customAlert('Notification updated');
                 } else {
