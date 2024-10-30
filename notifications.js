@@ -19,7 +19,11 @@ cslog('Notifications module loaded');
 
 const MOCK_CONN = true;     /* Mock connection */
 let NOTIFICATIONS = [];    /* Array of notifications */
-const NOTIF_STATUS = ["new", "in-progress", "completed", "failed", "canceled"];
+
+const _NOTIF_STATUS_START = ["new", "queued", "scheduled"];
+const _NOTIF_STATUS_RUNNING = ["in-progress", "paused", "delayed"];
+const _NOTIF_STATUS_FINAL = ["completed", "failed", "canceled"];
+const NOTIF_STATUS = _NOTIF_STATUS_START.concat(_NOTIF_STATUS_RUNNING, _NOTIF_STATUS_FINAL);
 const ROOT_MENU_ITEMS = [
     'EXIT',
     'Add notification',
@@ -116,9 +120,6 @@ function get_notification(NOTIF_ID = undefined, JID = undefined) {
 }
 
 
-
-
-
 async function create_notification() {
     /* Create a new notification 
         This function is async because it fetches the client IP address
@@ -132,8 +133,6 @@ async function create_notification() {
 
     return notification;
 }
-
-
 
 
 /* Delete a notification by NOTIF_ID */
@@ -188,9 +187,35 @@ function delete_notification(NOTIF_ID = undefined, JID = undefined) {
     }
 }
 
+
+//const _NOTIF_STATUS_START = ["new", "queued", "scheduled"];
+//const _NOTIF_STATUS_RUNNING = ["in-progress", "paused", "delayed"];
+//const _NOTIF_STATUS_FINAL = ["completed", "failed", "canceled"];
 function validate_update_status_rules(current_status, new_status) {
-    /* Validate the update status rules */
-    return true;
+    /* Validate the update status based on the following rules */
+
+    // Rule 1 - for new_status queued, only if current_status is new
+    if (new_status === "queued" && current_status === "new") {
+        return true;
+    }
+
+    // Rule 2 - for new_status scheduled, only if current_status is new
+    if (new_status === "scheduled" && current_status === "new") {
+        return true;
+    }
+
+    // Rule 3 - for new_status in RUNNING, only if current_status is in START or RUNNING
+    if (_NOTIF_STATUS_RUNNING.includes(new_status) && (_NOTIF_STATUS_START.includes(current_status) || _NOTIF_STATUS_RUNNING.includes(current_status))) {
+        return true;
+    }
+
+    // Rule 4 - for new_status in FINAL, only if current_status is in START or RUNNING
+    if (_NOTIF_STATUS_FINAL.includes(new_status) && (_NOTIF_STATUS_START.includes(current_status) || _NOTIF_STATUS_RUNNING.includes(current_status))) {
+        return true;
+    }
+
+    // Any other status change is invalid
+    return false;
 }
 
 
@@ -198,8 +223,8 @@ function _update_notification_status(notification) {
     /* Update the status of a notification */
     let new_status = prompt('Enter the new status:\n' + NOTIF_STATUS.join('\n'));
     if (NOTIF_STATUS.includes(new_status.toLowerCase())) {
-        if (!validate_update_status_rules(notification.status, new_status)) {
-            customAlert('Invalid status change');
+        if (!validate_update_status_rules(notification.status, new_status.toLowerCase())) {
+            customAlert(`Invalid status change from ${notification.status} to ${new_status.toLowerCase()}, please check the rules`);
             return false;
         }
         notification.status = new_status.toLowerCase();
