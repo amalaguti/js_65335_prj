@@ -67,6 +67,7 @@ function gen_random_notification_id() {
 
 
 async function create_notification() {
+
     /* Create a new notification 
         This function is async because it fetches the client IP address
     */
@@ -74,7 +75,6 @@ async function create_notification() {
     let JID = gen_random_jid();
     notification = new Notification(gen_random_notification_id(),JID,"new",client_ip);
     cslog('Notification created: ' + notification.toString());
-    
     return notification;
 }
 
@@ -102,44 +102,15 @@ function get_notification(NOTIF_ID = undefined, JID = undefined) {
 /* Delete a notification by NOTIF_ID */
 function delete_notification_by_ID(NOTIF_ID) {
     /* Delete a notification by ID */
-    let index = NOTIFICATIONS.findIndex(notification => notification.ID === NOTIF_ID);
-    if (index > -1) {
-        let delete_confirm = confirm('Do you want to delete the notification: ' + JSON.stringify(NOTIFICATIONS[index]));
-    
-        if (delete_confirm) {
-            cslog('Deleting notification by ID: ' + JSON.stringify(NOTIFICATIONS[index]));
-            NOTIFICATIONS.splice(index, 1);
-            return true;
-        } else {
-            cslog('Notification NOTIF_ID ' + NOTIF_ID + ' not deleted');
-            return false;
-        }
-    } else {
-        cslog(`Notification NOTIF_ID ${NOTIF_ID} not found`);
-        return false;
-    }
+    return notifications.deleteByID(NOTIF_ID);
 
 }
 
-
 function delete_notification_by_JID(JID) {
     /* Delete a notification by JID */
-    let index = NOTIFICATIONS.findIndex(notification => notification.JID === JID);
-    if (index > -1) {
-        let delete_confirm = confirm('Do you want to delete the notification: ' + JSON.stringify(NOTIFICATIONS[index]));
+    return notifications.deleteByJID(JID);
+    
 
-        if (delete_confirm) {
-            cslog('Deleting notification by JID: ' + JSON.stringify(NOTIFICATIONS[index]));
-            NOTIFICATIONS.splice(index, 1);
-            return true;
-        } else {
-            cslog('Notification NOTIF_ID ' + NOTIF_ID + ' not deleted');
-            return false;
-        }
-    } else {
-        cslog(`Notification JID ${JID} not found`);
-        return false;
-    }
 }
 
 function delete_notification(NOTIF_ID = undefined, JID = undefined) {
@@ -294,10 +265,15 @@ async function show_menu() {
             case 1:
                 /* Add notification */
                 notification = await create_notification();
-                cslog('Menu Option 1: ' + notification.toString());
-                customAlert('Notification created: ' + notification.toString());
-                cslog('Notification added at position: ' + (notifications.add(notification)-1));
-                cslog('Notifications count: ' + notifications.count());
+
+                if (typeof notification === 'object') {
+                    customAlert('Notification created: ' + notification.toString());
+                    cslog('Notification added at position: ' + (NOTIFICATIONS.add(notification)-1));
+                    cslog('Notifications count: ' + NOTIFICATIONS.count());
+                } else {
+                    cslog('Notification NOT created');
+                    customAlert('Notification NOT created');
+                }
                 _lp_flag = confirm('Do you want to continue managing notifications ?');
                 break;
                 
@@ -307,9 +283,9 @@ async function show_menu() {
                 /* List notifications */
                 // notifications = get_notifications();
                 
-                cslog('Menu Option 2: ' + notifications.list());
-                cslog('Notifications count: ' + notifications.count());
-                customAlert(`Notifications count ${notifications.count()}: ` + notifications.list());
+                cslog('Menu Option 2: ' + NOTIFICATIONS.list());
+                cslog('Notifications count: ' + NOTIFICATIONS.count());
+                customAlert(`Notifications count ${NOTIFICATIONS.count()}: ` + NOTIFICATIONS.list());
                 
                 _lp_flag = confirm('Do you want to continue managing notifications ?');
                 break;
@@ -365,21 +341,21 @@ async function show_menu() {
                         /* Delete notification by NOTIF_ID */
                         NOTIF_ID = prompt('Enter the NOTIF_ID to delete - Ex: NOTIF_ID-0000000');
                         deletion = delete_notification(NOTIF_ID, undefined);
-                        if (deletion) {
-                            customAlert('Notification deleted');
-                        } else {
-                            customAlert('Notification NOT deleted');
-                        }
+                        // if (deletion) {
+                        //     customAlert('Notification deleted');
+                        // } else {
+                        //     customAlert('Notification NOT deleted');
+                        // }
                         break;
                     case 2:
                         /* Update notification status by JID */
                         JID = prompt('Enter the JID to delete - Ex: JID-99999')
-                        update = update_notification_status(undefined, JID);
-                        if (update) {
-                            customAlert('Notification updated');
-                        } else {
-                            customAlert('Notification NOT updated');
-                        }
+                        deletion = delete_notification(NOTIF_ID, undefined);
+                        // if (deletion) {
+                        //     customAlert('Notification deleted');
+                        // } else {
+                        //     customAlert('Notification NOT deleted');
+                        // }
                         break;
                     default:
                         alert('Wrong option');
@@ -466,6 +442,7 @@ class Notifications {
     add(notification) {
         return this.notifications.push(notification);
     }
+    
 
     getByID(ID) {
         let notification = this.notifications.find(notification => notification.ID === ID);
@@ -490,9 +467,22 @@ class Notifications {
     deleteByID(ID) {
         const index = this.notifications.findIndex(notification => notification.ID === ID);
         if (index > -1) {
-            this.notifications.splice(index, 1);
-            return true;
+            let delete_confirm = confirm('Do you want to delete the notification: ' + JSON.stringify(NOTIFICATIONS[index]));
+    
+            if (delete_confirm) {
+                cslog('Deleting notification by ID: ' + JSON.stringify(NOTIFICATIONS[index]));
+                this.notifications.splice(index, 1);
+                cslog('Notification NOTIF_ID ' + NOTIF_ID + ' deleted');
+                customAlert('Notification NOTIF_ID ' + NOTIF_ID + ' deleted');
+                return true;
+            } else {
+                cslog('Notification NOTIF_ID ' + NOTIF_ID + ' not deleted');
+                return false;
+            }
         }
+
+        cslog(`Notification NOTIF_ID ${ID} not found`)
+        customAlert(`Notification NOTIF_ID ${ID} not found`);
         return false;
     }
 
@@ -533,14 +523,14 @@ class Notifications {
 }
 
 /* Create a new instance of Notifications */
-const notifications = new Notifications();
+const NOTIFICATIONS = new Notifications();
 
 /* Create sample NOTIFICATIONS if MOCK enabled */
 if (MOCK_CONN) {
     cslog('MOCK MODE enabled');
 
     /* Array of mocked notifications */
-    NOTIFICATIONS = [
+   _NOTIFICATIONS = [
         { ID: "NOTIF_ID-0000000", JID: "JID-11111", status: "new", consumer: "192.168.1.1" },
         { ID: "NOTIF_ID-9999999", JID: "JID-99999", status: "new", consumer: "192.168.1.1" },
         { ID: gen_random_notification_id(), JID: gen_random_jid(), status: "new", consumer: "192.168.1.1" },
@@ -550,13 +540,13 @@ if (MOCK_CONN) {
         { ID: gen_random_notification_id(), JID: gen_random_jid(), status: "canceled", consumer: "192.168.1.4" }
     ];     
 
-    for  (let _notification of NOTIFICATIONS) {
-        notifications.add(new Notification(_notification.ID, _notification.JID, _notification.status, _notification.consumer));
+    for  (let _notification of _NOTIFICATIONS) {
+        NOTIFICATIONS.add(new Notification(_notification.ID, _notification.JID, _notification.status, _notification.consumer));
     }
 }
 
 /* Show notifications */
-cslog('Notifications: ' + JSON.stringify(notifications.list()));
+cslog('Notifications: ' + JSON.stringify(NOTIFICATIONS.list()));
 // cslog('Notification by ID: ' + JSON.stringify(notifications.getByID("NOTIF_ID-0000000")));
 // cslog('Notification by JID: ' + JSON.stringify(notifications.getByJID("JID-99999")));
 // cslog('Notification by JID: ' + notifications.getByJID("JID-99999").toString());
@@ -564,3 +554,7 @@ cslog('Notifications: ' + JSON.stringify(notifications.list()));
 show_menu();
 
 //cslog(JSON.stringify(get_notification(undefined,"JID-99999")));
+
+// cslog(JSON.stringify(delete_notification("NOTIF_ID-0000000",undefined)));
+// cslog(JSON.stringify(delete_notification(undefined,"JID-99999")));
+// cslog('Notifications: ' + JSON.stringify(notifications.list()));
