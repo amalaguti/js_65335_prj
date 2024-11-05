@@ -81,12 +81,12 @@ async function create_notification() {
 
 function get_notification_by_ID(NOTIF_ID) {
     /* Get a notification by ID */
-    return notifications.getByID(NOTIF_ID)
+   return NOTIFICATIONS.getByID(NOTIF_ID)
 }
 
 function get_notification_by_JID(JID) {
     /* Get a notification by JID */
-    return notifications.getByJID(JID)
+   return NOTIFICATIONS.getByJID(JID)
 }
 
 function get_notification(NOTIF_ID = undefined, JID = undefined) {
@@ -102,13 +102,13 @@ function get_notification(NOTIF_ID = undefined, JID = undefined) {
 /* Delete a notification by NOTIF_ID */
 function delete_notification_by_ID(NOTIF_ID) {
     /* Delete a notification by ID */
-    return notifications.deleteByID(NOTIF_ID);
+   return NOTIFICATIONS.deleteByID(NOTIF_ID);
 
 }
 
 function delete_notification_by_JID(JID) {
     /* Delete a notification by JID */
-    return notifications.deleteByJID(JID);
+   return NOTIFICATIONS.deleteByJID(JID);
     
 
 }
@@ -266,7 +266,7 @@ async function show_menu() {
                 /* Add notification */
                 notification = await create_notification();
 
-                if (typeof notification === 'object') {
+                if (notification instanceof Notification) {
                     customAlert('Notification created: ' + notification.toString());
                     cslog('Notification added at position: ' + (NOTIFICATIONS.add(notification)-1));
                     cslog('Notifications count: ' + NOTIFICATIONS.count());
@@ -280,9 +280,7 @@ async function show_menu() {
 
             // LIST NOTIFICATIONS
             case 2:
-                /* List notifications */
-                // notifications = get_notifications();
-                
+                /* List notifications */                
                 cslog('Menu Option 2: ' + NOTIFICATIONS.list());
                 cslog('Notifications count: ' + NOTIFICATIONS.count());
                 customAlert(`Notifications count ${NOTIFICATIONS.count()}: ` + NOTIFICATIONS.list());
@@ -293,7 +291,7 @@ async function show_menu() {
             
             // VIEW NOTIFICATION
             case 3:
-                /* Delete notification by NOTIF_ID or by ID*/
+                /* View notification by NOTIF_ID or by ID*/
                 action = show_menu_by_options(ROOT_MENU_ITEMS[action])
 
                 switch (action) {
@@ -305,9 +303,13 @@ async function show_menu() {
                         /* View notification by NOTIF_ID */
                         NOTIF_ID = prompt('Enter the NOTIF_ID to view - Ex: NOTIF_ID-0000000');
                         notification = get_notification(NOTIF_ID, undefined);
-                        cslog('Menu Option 3: ' + notification.toString());
-                        if (notification) {
+    
+                        if (notification instanceof Notification) {
+                            cslog('View notification by NOTIF_ID outcome: ' + notification.toString());
                             customAlert('Notification: ' + notification.toString());
+                        } else {
+                            cslog('View notification by NOTIF_ID outcome: ' + notification.toString());
+                            customAlert(`Notification NOTIF_ID ${NOTIF_ID} not found`);
                         }
                         break;
                     case 2:
@@ -449,7 +451,6 @@ class Notifications {
         if (notification !== undefined) {
             return notification;
         } else {
-            customAlert(`Notification NOTIF_ID ${ID} not found`);
             return false;
         }
     }
