@@ -170,8 +170,18 @@ function update_notification_status(notification) {
     }
 }
 
+function _view_notification(notification, _ID) {
+    /* View notification, used in menu cases logic to reduce code duplication */
+    if (notification instanceof Notification) {
+        cslog(`View notification ${_ID} outcome: ${notification.toString()}`);
+        customAlert('Notification: ' + notification.toString());
+    } else {
+        customAlert(`Notification ${_ID} not found`);
+    }
+}
+
 function _update_status(notification, id) {
-    /* Update the status of a notification , used in menu cases logic to reduce code duplication */
+    /* Update the status of a notification, used in menu cases logic to reduce code duplication */
     if (notification instanceof Notification) {
         update = update_notification_status(notification);
         if (update) {
@@ -288,16 +298,9 @@ async function show_menu() {
                         /* View notification by NOTIF_ID */
                         NOTIF_ID = prompt('Enter the NOTIF_ID to view - Ex: NOTIF_ID-0000000');
                 
-                        if  (NOTIF_ID) {
-                            notification = get_notification(NOTIF_ID, undefined);
-                    
-                            if (notification[0] instanceof Notification) {
-                                cslog('View notification by NOTIF_ID outcome: ' + notification[0].toString());
-                                customAlert('Notification: ' + notification[0].toString());
-                            } else {
-                                cslog('View notification by NOTIF_ID outcome: ' + JSON.stringify(notification));
-                                customAlert(`Notification NOTIF_ID ${NOTIF_ID} not found`);
-                            }
+                        if (NOTIF_ID) {
+                            notification = get_notification(NOTIF_ID, undefined);                
+                            _view_notification(notification[0], NOTIF_ID)
                         }
                         break;
                     case 2:
@@ -306,14 +309,7 @@ async function show_menu() {
 
                         if (JID) {
                             notification = get_notification(undefined, JID);
-
-                            if (notification[0] instanceof Notification) {
-                                cslog('View notification by JID outcome: ' + notification[0].toString());
-                                customAlert('Notification: ' + notification[0].toString());
-                            } else {
-                                cslog('View notification by NOTIF_ID outcome: ' + JSON.stringify(notification));
-                                customAlert(`Notification JID ${JID} not found`);
-                            }
+                            _view_notification(notification[0], JID)
                         }
                         break;
                     default:
@@ -343,6 +339,7 @@ async function show_menu() {
                             notification = get_notification(NOTIF_ID, undefined);
                         
                             if (notification[0] instanceof Notification) {
+                                /* Confirm the deletion */
                                 let delete_confirm = confirm('Do you want to delete the notification: ' + notification[0].toString());
                                 if (delete_confirm) {
                                     deletion = NOTIFICATIONS.deleteByID(NOTIF_ID);
@@ -371,6 +368,7 @@ async function show_menu() {
                             notification = get_notification(undefined, JID);
                             
                             if (notification[0] instanceof Notification) {
+                                /* Confirm the deletion */
                                 let delete_confirm = confirm('Do you want to delete the notification: ' + notification[0].toString());
                                 if (delete_confirm) {
                                     deletion = NOTIFICATIONS.deleteByJID(JID);
