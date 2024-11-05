@@ -347,26 +347,47 @@ async function show_menu() {
                         /* Delete notification by NOTIF_ID */
                         NOTIF_ID = prompt('Enter the NOTIF_ID to delete - Ex: NOTIF_ID-0000000');
                         notification = get_notification(NOTIF_ID, undefined);
-    
+
                         if (notification instanceof Notification) {
-                            deletion = delete_notification(NOTIF_ID, undefined);
-                            // if (deletion) {
-                            //     customAlert('Notification deleted');
-                            // } else {
-                            //     customAlert('Notification NOT deleted');
-                            // }
+                            let delete_confirm = confirm('Do you want to delete the notification: ' + notification.toString());
+                            if (delete_confirm) {
+                                deletion = NOTIFICATIONS.deleteByID(NOTIF_ID);
+                                if (deletion) {
+                                    customAlert('Notification NOTIF_ID ' + NOTIF_ID + ' deleted');
+                                    break;
+                                } else {
+                                    customAlert('Notification NOTIF_ID ' + NOTIF_ID + ' NOT deleted');
+                                    break;
+                                }
+                            } else {
+                                // User canceled the deletion
+                                break;
+                            }
                         }
                         customAlert(`Notification NOTIF_ID ${NOTIF_ID} not found`);
                         break;
                     case 2:
                         /* Update notification status by JID */
                         JID = prompt('Enter the JID to delete - Ex: JID-99999')
-                        deletion = delete_notification(NOTIF_ID, undefined);
-                        // if (deletion) {
-                        //     customAlert('Notification deleted');
-                        // } else {
-                        //     customAlert('Notification NOT deleted');
-                        // }
+                        notification = get_notification(undefined, JID);
+
+                        if (notification instanceof Notification) {
+                            let delete_confirm = confirm('Do you want to delete the notification: ' + notification.toString());
+                            if (delete_confirm) {
+                                deletion = NOTIFICATIONS.deleteByJID(JID);
+                                if (deletion) {
+                                    customAlert('Notification JID ' + JID + ' deleted');
+                                    break;
+                                } else {
+                                    customAlert('Notification JID ' + JID + ' NOT deleted');
+                                    break;
+                                }
+                            } else {
+                                // User canceled the deletion
+                                break;
+                            }
+                        }
+                        customAlert(`Notification JID ${JID} not found`);
                         break;
                     default:
                         alert('Wrong option');
@@ -476,19 +497,10 @@ class Notifications {
     deleteByID(ID) {
         const index = this.notifications.findIndex(notification => notification.ID === ID);
         if (index > -1) {
-            let delete_confirm = confirm('Do you want to delete the notification: ' + JSON.stringify(NOTIFICATIONS[index]));
-    
-            if (delete_confirm) {
-                console.log("ADRIAAAAN!!")
-                // cslog('Deleting notification by ID: ' + JSON.stringify(NOTIFICATIONS[index]));
-                // this.notifications.splice(index, 1);
-                // cslog('Notification NOTIF_ID ' + NOTIF_ID + ' deleted');
-                // customAlert('Notification NOTIF_ID ' + NOTIF_ID + ' deleted');
-                return true;
-            } else {
-                cslog('Notification NOTIF_ID ' + NOTIF_ID + ' not deleted');
-                return false;
-            }
+            cslog('Deleting notification by ID: ' + this.notifications[index].toString());
+            this.notifications.splice(index, 1);
+            cslog('Notification NOTIF_ID ' + NOTIF_ID + ' deleted');
+            return true;
         }
         cslog(`Notification NOTIF_ID ${ID} not found`)
         customAlert(`Notification NOTIF_ID ${ID} not found`);
@@ -503,6 +515,15 @@ class Notifications {
         }
         return false;
     }
+
+    deleteByIdx(index) {
+        if (index > -1) {
+            this.notifications.splice(index, 1);
+            return true;
+        }
+        return false;
+    }
+
 
     updateStatusByID(ID, newStatus) {
         const notification = this.getByID(ID);
