@@ -329,18 +329,18 @@ async function show_menu() {
                         /* View notification by NOTIF_ID */
                         NOTIF_ID = prompt('Enter the NOTIF_ID to view - Ex: NOTIF_ID-0000000');
                         notification = get_notification(NOTIF_ID, undefined);
-                        cslog('Menu Option 3: ' + JSON.stringify(notification));
+                        cslog('Menu Option 3: ' + notification.toString());
                         if (notification) {
-                            customAlert('Notification: ' + JSON.stringify(notification));
+                            customAlert('Notification: ' + notification.toString());
                         }
                         break;
                     case 2:
                         /* View notification by JID */
                         JID = prompt('Enter the JID to view - Ex: JID-99999');
                         notification = get_notification(undefined, JID);
-                        cslog('Menu Option 4: ' + JSON.stringify(notification));
+                        cslog('Menu Option 4: ' + notification.toString());
                         if (notification) {
-                            customAlert('Notification: ' + JSON.stringify(notification));
+                            customAlert('Notification: ' + notification.toString());
                         }
                         break;
                     default:
