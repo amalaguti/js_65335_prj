@@ -151,7 +151,6 @@ function validate_update_status_rules(current_status, new_status) {
     return false;
 }
 
-
 function update_notification_status(notification) {
     /* Update the status of a notification running validation rules check first */
     let new_status = prompt('Enter the new status:\n' + NOTIF_STATUS.join('\n'));
@@ -171,6 +170,22 @@ function update_notification_status(notification) {
     }
 }
 
+function _update_status(notification, id) {
+    /* Update the status of a notification , used in menu cases logic to reduce code duplication */
+    if (notification instanceof Notification) {
+        update = update_notification_status(notification);
+        if (update) {
+            customAlert('Notification updated');
+            return true
+        } else {
+            customAlert('Notification NOT updated');
+            return false
+        }
+    } else {
+        customAlert(`Notification ${id} not found`);
+        return false
+    }
+}
 
 function build_menu(menu_items = []) {
     /* Build the menu items string from the array of menu items*/
@@ -218,7 +233,6 @@ function menu_notifications_actions_by_options(menu_item) {
 }
 
 
-
 async function show_menu() {
     let _lp_flag = true;
 
@@ -232,7 +246,6 @@ async function show_menu() {
                 _lp_flag = false;
                 break;
             
-
             // ADD NOTIFICATION
             case 1:
                 /* Add notification */
@@ -401,19 +414,8 @@ async function show_menu() {
 
                         if (NOTIF_ID) {
                             notification = get_notification(NOTIF_ID, undefined);
-
-                            if (notification[0] instanceof Notification) {
-                                update = update_notification_status(notification[0]);
-                                if (update) {
-                                    customAlert('Notification updated');
-                                } else {
-                                    customAlert('Notification NOT updated');
-                                }
-                                break;
-                            } else {
-                                customAlert(`Notification NOTIF_ID ${NOTIF_ID} not found`);
-                                break;
-                            }
+                            update = _update_status(notification[0], NOTIF_ID);
+                            break;
                         }
                         // User canceled the deletion
                         break;
@@ -423,19 +425,8 @@ async function show_menu() {
 
                         if (JID) {
                             notification = get_notification(undefined, JID);
-
-                            if (notification[0] instanceof Notification) {
-                                update = update_notification_status(notification[0]);
-                                if (update) {
-                                    customAlert('Notification updated');
-                                } else {
-                                    customAlert('Notification NOT updated');
-                                }
-                                break;
-                            } else {
-                                customAlert(`Notification JID ${JID} not found`);
-                                break;
-                            }
+                            update = _update_status(notification[0], JID);
+                            break;
                         }
                         // User canceled the deletion
                         break;
@@ -490,7 +481,7 @@ class Notification {
     }
 
     update_status(status) {
-        cslog(`Updating to status ${status.toLowerCase()} for notification: ${this.ID} - ${this.JID}`);
+        cslog(`Updating to status ${status.toLowerCase()} for notification ID: ${this.ID} - JID:${this.JID}`);
         this.status = status.toLowerCase();;
     }
     
@@ -605,3 +596,5 @@ show_menu();
 // cslog(JSON.stringify(delete_notification("NOTIF_ID-0000000",undefined)));
 // cslog(JSON.stringify(delete_notification(undefined,"JID-99999")));
 // cslog('Notifications: ' + JSON.stringify(notifications.list()));
+
+
