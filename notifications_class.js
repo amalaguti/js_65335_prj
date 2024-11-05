@@ -302,27 +302,33 @@ async function show_menu() {
                     case 1:
                         /* View notification by NOTIF_ID */
                         NOTIF_ID = prompt('Enter the NOTIF_ID to view - Ex: NOTIF_ID-0000000');
-                        notification = get_notification(NOTIF_ID, undefined);
-    
-                        if (notification instanceof Notification) {
-                            cslog('View notification by NOTIF_ID outcome: ' + notification.toString());
-                            customAlert('Notification: ' + notification.toString());
-                        } else {
-                            cslog('View notification by NOTIF_ID outcome: ' + notification.toString());
-                            customAlert(`Notification NOTIF_ID ${NOTIF_ID} not found`);
+                
+                        if  (NOTIF_ID) {
+                            notification = get_notification(NOTIF_ID, undefined);
+                    
+                            if (notification[0] instanceof Notification) {
+                                cslog('View notification by NOTIF_ID outcome: ' + notification[0].toString());
+                                customAlert('Notification: ' + notification[0].toString());
+                            } else {
+                                cslog('View notification by NOTIF_ID outcome: ' + JSON.stringify(notification));
+                                customAlert(`Notification NOTIF_ID ${NOTIF_ID} not found`);
+                            }
                         }
                         break;
                     case 2:
                         /* View notification by JID */
                         JID = prompt('Enter the JID to view - Ex: JID-99999');
-                        notification = get_notification(undefined, JID);
-                        cslog('Menu Option 4: ' + notification.toString());
-                        if (notification instanceof Notification) {
-                            cslog('View notification by JID outcome: ' + notification.toString());
-                            customAlert('Notification: ' + notification.toString());
-                        } else {
-                            cslog('View notification by JID outcome: ' + notification.toString());
-                            customAlert(`!!!Notification JID ${JID} not found`);
+
+                        if (JID) {
+                            notification = get_notification(undefined, JID);
+
+                            if (notification[0] instanceof Notification) {
+                                cslog('View notification by JID outcome: ' + notification[0].toString());
+                                customAlert('Notification: ' + notification[0].toString());
+                            } else {
+                                cslog('View notification by NOTIF_ID outcome: ' + JSON.stringify(notification));
+                                customAlert(`Notification JID ${JID} not found`);
+                            }
                         }
                         break;
                     default:
@@ -477,21 +483,23 @@ class Notifications {
     
 
     getByID(ID) {
-        let notification = this.notifications.find(notification => notification.ID === ID);
-        if (notification !== undefined) {
-            return notification;
+        // Returns notification and index position
+        const index = this.notifications.findIndex(notification => notification.ID === ID);
+        if (index > -1) {
+            return [this.notifications[index], index];
         } else {
             return false;
-        }
+        }   
     }
 
     getByJID(JID) {
-        let notification = this.notifications.find(notification => notification.JID === JID);
-        if (notification !== undefined) {
-            return notification;
+        // Returns notification and index position
+        const index = this.notifications.findIndex(notification => notification.JID === JID);
+        if (index > -1) {
+            return [this.notifications[index], index];
         } else {
             return false;
-        }
+        } 
     }
 
     deleteByID(ID) {
