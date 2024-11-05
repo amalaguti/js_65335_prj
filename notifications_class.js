@@ -66,57 +66,15 @@ function gen_random_notification_id() {
 }
 
 
-/* MOCK function to get notifications */
-// function get_notifications() {
-//     /* Return the list of notifications */
-//     if (MOCK_CONN) {
-//         return JSON.stringify(NOTIFICATIONS);
-//     };
-// }
-
-// function get_notification_by_ID(NOTIF_ID) {
-//     /* Get a notification by ID */
-//     let index = NOTIFICATIONS.findIndex(notification => notification.ID === NOTIF_ID);
-//     if (index > -1) {
-//         return NOTIFICATIONS[index];
-//     } else {
-//         customAlert(`Notification NOTIF_ID ${NOTIF_ID} not found`);
-//         return false;
-//     }
-// }
-
-// function get_notification_by_JID(JID) {
-//     /* Get a notification by JID */
-//     let index = NOTIFICATIONS.findIndex(notification => notification.JID === JID);
-//     if (index > -1) {
-//         return NOTIFICATIONS[index];
-//     } else {
-//         customAlert(`Notification JID ${JID} not found`);
-//         return false;
-//     }
-// }
-
-// function get_notification(NOTIF_ID = undefined, JID = undefined) {
-//     /* Get a notification by NOTIF_ID or JID */
-//     if (NOTIF_ID !== undefined) {
-//         return get_notification_by_ID(NOTIF_ID);
-//     } else if (JID !== undefined) {
-//         return get_notification_by_JID(JID);
-//     }
-// }
-
-
 async function create_notification() {
     /* Create a new notification 
         This function is async because it fetches the client IP address
     */
     let client_ip = await get_ip();
     let JID = gen_random_jid();
-    let notification = { ID: gen_random_notification_id(), JID: JID, status: "new", consumer: client_ip };
-    cslog('Notification created: ' + JSON.stringify(notification));
-    NOTIFICATIONS.push(notification);
-    cslog('Added new notification: ' + get_notifications());
-
+    notification = new Notification(gen_random_notification_id(),JID,"new",client_ip);
+    cslog('Notification created: ' + notification.toString());
+    
     return notification;
 }
 
@@ -316,8 +274,10 @@ async function show_menu() {
             case 1:
                 /* Add notification */
                 notification = await create_notification();
-                cslog('Menu Option 1: ' + JSON.stringify(notification));
-                customAlert('Notification created: ' + JSON.stringify(notification));
+                cslog('Menu Option 1: ' + notification.toString());
+                customAlert('Notification created: ' + notification.toString());
+                cslog('Notification added at position: ' + (notifications.add(notification)-1));
+                cslog('Notifications count: ' + notifications.count());
                 _lp_flag = confirm('Do you want to continue managing notifications ?');
                 break;
                 
@@ -325,9 +285,12 @@ async function show_menu() {
             // LIST NOTIFICATIONS
             case 2:
                 /* List notifications */
-                notifications = get_notifications();
-                cslog('Menu Option 2: ' + notifications);
-                customAlert('Notifications: ' + notifications);
+                // notifications = get_notifications();
+                
+                cslog('Menu Option 2: ' + notifications.list());
+                cslog('Notifications count: ' + notifications.count());
+                customAlert(`Notifications count ${notifications.count()}: ` + notifications.list());
+                
                 _lp_flag = confirm('Do you want to continue managing notifications ?');
                 break;
 
@@ -477,7 +440,7 @@ class Notifications {
     }
 
     add(notification) {
-        this.notifications.push(notification);
+        return this.notifications.push(notification);
     }
 
     getByID(ID) {
@@ -526,6 +489,10 @@ class Notifications {
 
     list() {
         return this.notifications;
+    }
+
+    count() {
+        return this.notifications.length;
     }
 }
 
