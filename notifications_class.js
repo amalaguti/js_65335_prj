@@ -464,6 +464,10 @@ class Notification {
         this.status = status;
         this.consumer = consumer;
     }
+
+    toString() {
+        return JSON.stringify(this);
+    }
 }
 
 /* Class to manage notifications objects*/
@@ -550,7 +554,8 @@ if (MOCK_CONN) {
 
 /* Show notifications */
 cslog('Notifications: ' + JSON.stringify(notifications.list()));
-// show_menu();
+// cslog('Notification by ID: ' + JSON.stringify(notifications.getByID("NOTIF_ID-0000000")));
+// cslog('Notification by JID: ' + JSON.stringify(notifications.getByJID("JID-99999")));
+// cslog('Notification by JID: ' + notifications.getByJID("JID-99999").toString());
 
-cslog('Notification by ID: ' + JSON.stringify(notifications.getByID("NOTIF_ID-0000000")));
-cslog('Notification by JID: ' + JSON.stringify(notifications.getByJID("JID-99999")));
+show_menu();
