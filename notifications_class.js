@@ -152,50 +152,22 @@ function validate_update_status_rules(current_status, new_status) {
 }
 
 
-function _update_notification_status(notification) {
-    /* Update the status of a notification */
+function update_notification_status(notification) {
+    /* Update the status of a notification running validation rules check first */
     let new_status = prompt('Enter the new status:\n' + NOTIF_STATUS.join('\n'));
-    if (NOTIF_STATUS.includes(new_status.toLowerCase())) {
-        if (!validate_update_status_rules(notification.status, new_status.toLowerCase())) {
-            customAlert(`Invalid status change from ${notification.status} to ${new_status.toLowerCase()}, please check the rules`);
+
+    new_status = new_status.toLowerCase();
+    if (NOTIF_STATUS.includes(new_status)) {
+        if (!validate_update_status_rules(notification.status, new_status)) {
+            customAlert(`Invalid status change from ${notification.status} to ${new_status}, please check the rules`);
             return false;
         }
-        notification.status = new_status.toLowerCase();
+    
+        notification.update_status(new_status);
         return true;
     } else {
         customAlert('Invalid status');
         return false;
-    }
-}
-
-
-function update_notification_status_by_ID(NOTIF_ID) {
-    /* Update the status of a notification by ID */
-    notification = get_notification_by_ID(NOTIF_ID);
-    if (notification) {
-        return _update_notification_status(notification);
-    } else {
-        return false;
-    }
-}
-
-function update_notification_status_by_JID(JID) {
-    /* Update the status of a notification by JID */
-    notification = get_notification_by_JID(JID);
-    if (notification) {
-        return _update_notification_status(notification);
-    } else {
-        return false;
-    }
-}
-
-
-function update_notification_status(NOTIF_ID = undefined, JID = undefined) {
-    /* Update the status of a notification by NOTIF_ID or JID */
-    if (NOTIF_ID !== undefined) {
-        return update_notification_status_by_ID(NOTIF_ID);
-    } else if (JID !== undefined) {
-        return update_notification_status_by_JID(JID);
     }
 }
 
@@ -426,22 +398,46 @@ async function show_menu() {
                     case 1:
                         /* Update notification status by NOTIF_ID */
                         NOTIF_ID = prompt('Enter the NOTIF_ID to update status - Ex: NOTIF_ID-0000000');
-                        update = update_notification_status(NOTIF_ID, undefined);
-                        if (update) {
-                            customAlert('Notification updated');
-                        } else {
-                            customAlert('Notification NOT updated');
+
+                        if (NOTIF_ID) {
+                            notification = get_notification(NOTIF_ID, undefined);
+
+                            if (notification[0] instanceof Notification) {
+                                update = update_notification_status(notification[0]);
+                                if (update) {
+                                    customAlert('Notification updated');
+                                } else {
+                                    customAlert('Notification NOT updated');
+                                }
+                                break;
+                            } else {
+                                customAlert(`Notification NOTIF_ID ${NOTIF_ID} not found`);
+                                break;
+                            }
                         }
+                        // User canceled the deletion
                         break;
                     case 2:
                         /* Update notification status by JID */
                         JID = prompt('Enter the JID to update status - Ex: JID-99999')
-                        update = update_notification_status(undefined, JID);
-                        if (update) {
-                            customAlert('Notification updated');
-                        } else {
-                            customAlert('Notification NOT updated');
+
+                        if (JID) {
+                            notification = get_notification(undefined, JID);
+
+                            if (notification[0] instanceof Notification) {
+                                update = update_notification_status(notification[0]);
+                                if (update) {
+                                    customAlert('Notification updated');
+                                } else {
+                                    customAlert('Notification NOT updated');
+                                }
+                                break;
+                            } else {
+                                customAlert(`Notification JID ${JID} not found`);
+                                break;
+                            }
                         }
+                        // User canceled the deletion
                         break;
                     default:
                         alert('Wrong option');  
@@ -467,18 +463,37 @@ function show_menu_by_options(menu_item) {
 }
 
 
+
 /* Class representing a notification object */
 class Notification {
     constructor(ID, JID, status, consumer) {
         this.ID = ID;
         this.JID = JID;
-        this.status = status;
+        this.status = status.toLowerCase();
         this.consumer = consumer;
     }
 
     toString() {
         return JSON.stringify(this);
     }
+
+    get_status() {
+        return this.status;
+    }
+
+    get_consumer() {
+        return this.consumer;
+    }
+
+    get_JID() {
+        return this.JID;
+    }
+
+    update_status(status) {
+        cslog(`Updating to status ${status.toLowerCase()} for notification: ${this.ID} - ${this.JID}`);
+        this.status = status.toLowerCase();;
+    }
+    
 }
 
 /* Class to manage notifications objects*/
@@ -536,28 +551,10 @@ class Notifications {
         return false;        
     }
 
+    // ADRIAN: Implement this method
     deleteByIdx(index) {
         if (index > -1) {
             this.notifications.splice(index, 1);
-            return true;
-        }
-        return false;
-    }
-
-
-    updateStatusByID(ID, newStatus) {
-        const notification = this.getByID(ID);
-        if (notification) {
-            notification.status = newStatus;
-            return true;
-        }
-        return false;
-    }
-
-    updateStatusByJID(JID, newStatus) {
-        const notification = this.getByJID(JID);
-        if (notification) {
-            notification.status = newStatus;
             return true;
         }
         return false;
