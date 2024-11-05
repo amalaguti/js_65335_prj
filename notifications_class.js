@@ -79,6 +79,26 @@ async function create_notification() {
 }
 
 
+function get_notification_by_ID(NOTIF_ID) {
+    /* Get a notification by ID */
+    return notifications.getByID(NOTIF_ID)
+}
+
+function get_notification_by_JID(JID) {
+    /* Get a notification by JID */
+    return notifications.getByJID(JID)
+}
+
+function get_notification(NOTIF_ID = undefined, JID = undefined) {
+    /* Get a notification by NOTIF_ID or JID */
+    if (NOTIF_ID !== undefined) {
+        return get_notification_by_ID(NOTIF_ID);
+    } else if (JID !== undefined) {
+        return get_notification_by_JID(JID);
+    }
+}
+
+
 /* Delete a notification by NOTIF_ID */
 function delete_notification_by_ID(NOTIF_ID) {
     /* Delete a notification by ID */
@@ -310,14 +330,18 @@ async function show_menu() {
                         NOTIF_ID = prompt('Enter the NOTIF_ID to view - Ex: NOTIF_ID-0000000');
                         notification = get_notification(NOTIF_ID, undefined);
                         cslog('Menu Option 3: ' + JSON.stringify(notification));
-                        customAlert('Notification: ' + JSON.stringify(notification));
+                        if (notification) {
+                            customAlert('Notification: ' + JSON.stringify(notification));
+                        }
                         break;
                     case 2:
                         /* View notification by JID */
                         JID = prompt('Enter the JID to view - Ex: JID-99999');
                         notification = get_notification(undefined, JID);
                         cslog('Menu Option 4: ' + JSON.stringify(notification));
-                        customAlert('Notification: ' + JSON.stringify(notification));
+                        if (notification) {
+                            customAlert('Notification: ' + JSON.stringify(notification));
+                        }
                         break;
                     default:
                         alert('Wrong option');
@@ -444,11 +468,23 @@ class Notifications {
     }
 
     getByID(ID) {
-        return this.notifications.find(notification => notification.ID === ID);
+        let notification = this.notifications.find(notification => notification.ID === ID);
+        if (notification !== undefined) {
+            return notification;
+        } else {
+            customAlert(`Notification NOTIF_ID ${ID} not found`);
+            return false;
+        }
     }
 
     getByJID(JID) {
-        return this.notifications.find(notification => notification.JID === JID);
+        let notification = this.notifications.find(notification => notification.JID === JID);
+        if (notification !== undefined) {
+            return notification;
+        } else {
+            customAlert(`Notification ID ${JID} not found`);
+            return false;
+        }
     }
 
     deleteByID(ID) {
@@ -526,3 +562,5 @@ cslog('Notifications: ' + JSON.stringify(notifications.list()));
 // cslog('Notification by JID: ' + notifications.getByJID("JID-99999").toString());
 
 show_menu();
+
+//cslog(JSON.stringify(get_notification(undefined,"JID-99999")));
