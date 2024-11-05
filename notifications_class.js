@@ -317,8 +317,12 @@ async function show_menu() {
                         JID = prompt('Enter the JID to view - Ex: JID-99999');
                         notification = get_notification(undefined, JID);
                         cslog('Menu Option 4: ' + notification.toString());
-                        if (notification) {
+                        if (notification instanceof Notification) {
+                            cslog('View notification by JID outcome: ' + notification.toString());
                             customAlert('Notification: ' + notification.toString());
+                        } else {
+                            cslog('View notification by JID outcome: ' + notification.toString());
+                            customAlert(`!!!Notification JID ${JID} not found`);
                         }
                         break;
                     default:
@@ -342,12 +346,17 @@ async function show_menu() {
                     case 1:
                         /* Delete notification by NOTIF_ID */
                         NOTIF_ID = prompt('Enter the NOTIF_ID to delete - Ex: NOTIF_ID-0000000');
-                        deletion = delete_notification(NOTIF_ID, undefined);
-                        // if (deletion) {
-                        //     customAlert('Notification deleted');
-                        // } else {
-                        //     customAlert('Notification NOT deleted');
-                        // }
+                        notification = get_notification(NOTIF_ID, undefined);
+    
+                        if (notification instanceof Notification) {
+                            deletion = delete_notification(NOTIF_ID, undefined);
+                            // if (deletion) {
+                            //     customAlert('Notification deleted');
+                            // } else {
+                            //     customAlert('Notification NOT deleted');
+                            // }
+                        }
+                        customAlert(`Notification NOTIF_ID ${NOTIF_ID} not found`);
                         break;
                     case 2:
                         /* Update notification status by JID */
@@ -460,7 +469,6 @@ class Notifications {
         if (notification !== undefined) {
             return notification;
         } else {
-            customAlert(`Notification ID ${JID} not found`);
             return false;
         }
     }
@@ -471,17 +479,17 @@ class Notifications {
             let delete_confirm = confirm('Do you want to delete the notification: ' + JSON.stringify(NOTIFICATIONS[index]));
     
             if (delete_confirm) {
-                cslog('Deleting notification by ID: ' + JSON.stringify(NOTIFICATIONS[index]));
-                this.notifications.splice(index, 1);
-                cslog('Notification NOTIF_ID ' + NOTIF_ID + ' deleted');
-                customAlert('Notification NOTIF_ID ' + NOTIF_ID + ' deleted');
+                console.log("ADRIAAAAN!!")
+                // cslog('Deleting notification by ID: ' + JSON.stringify(NOTIFICATIONS[index]));
+                // this.notifications.splice(index, 1);
+                // cslog('Notification NOTIF_ID ' + NOTIF_ID + ' deleted');
+                // customAlert('Notification NOTIF_ID ' + NOTIF_ID + ' deleted');
                 return true;
             } else {
                 cslog('Notification NOTIF_ID ' + NOTIF_ID + ' not deleted');
                 return false;
             }
         }
-
         cslog(`Notification NOTIF_ID ${ID} not found`)
         customAlert(`Notification NOTIF_ID ${ID} not found`);
         return false;
