@@ -180,6 +180,17 @@ function _view_notification(notification, _ID) {
     }
 }
 
+function _delete_notification(Idx, _ID) {
+    deletion = NOTIFICATIONS.deleteByIdx(Idx);
+    if (deletion) {
+        customAlert('Notification ' + _ID + ' deleted');
+        return true;
+    } else {
+        customAlert('Notification ' + _ID + ' NOT deleted');
+        return false
+    }
+}
+
 function _update_status(notification, id) {
     /* Update the status of a notification, used in menu cases logic to reduce code duplication */
     if (notification instanceof Notification) {
@@ -301,6 +312,7 @@ async function show_menu() {
                         if (NOTIF_ID) {
                             notification = get_notification(NOTIF_ID, undefined);                
                             _view_notification(notification[0], NOTIF_ID)
+                            break
                         }
                         break;
                     case 2:
@@ -310,6 +322,7 @@ async function show_menu() {
                         if (JID) {
                             notification = get_notification(undefined, JID);
                             _view_notification(notification[0], JID)
+                            break
                         }
                         break;
                     default:
@@ -342,14 +355,9 @@ async function show_menu() {
                                 /* Confirm the deletion */
                                 let delete_confirm = confirm('Do you want to delete the notification: ' + notification[0].toString());
                                 if (delete_confirm) {
-                                    deletion = NOTIFICATIONS.deleteByID(NOTIF_ID);
-                                    if (deletion) {
-                                        customAlert('Notification NOTIF_ID ' + NOTIF_ID + ' deleted');
-                                        break;
-                                    } else {
-                                        customAlert('Notification NOTIF_ID ' + NOTIF_ID + ' NOT deleted');
-                                        break;
-                                    }
+                                    /* Delete the notification by index */
+                                    _delete_notification(notification[1], NOTIF_ID)
+                                    break;
                                 } else {
                                     // User canceled the deletion
                                     break;
@@ -371,14 +379,9 @@ async function show_menu() {
                                 /* Confirm the deletion */
                                 let delete_confirm = confirm('Do you want to delete the notification: ' + notification[0].toString());
                                 if (delete_confirm) {
-                                    deletion = NOTIFICATIONS.deleteByJID(JID);
-                                    if (deletion) {
-                                        customAlert('Notification JID ' + JID + ' deleted');
-                                        break;
-                                    } else {
-                                        customAlert('Notification JID ' + JID + ' NOT deleted');
-                                        break;
-                                    }
+                                    /* Delete the notification by index */
+                                    _delete_notification(notification[1], JID)
+                                    break;
                                 } else {
                                     // User canceled the deletion
                                     break;
@@ -540,10 +543,11 @@ class Notifications {
         return false;        
     }
 
-    // ADRIAN: Implement this method
     deleteByIdx(index) {
         if (index > -1) {
+            cslog('Deleting notification by index: ' + this.notifications[index].toString());
             this.notifications.splice(index, 1);
+            cslog('Notification index ' + index + ' deleted');
             return true;
         }
         return false;
@@ -583,16 +587,10 @@ if (MOCK_CONN) {
 
 /* Show notifications */
 cslog('Notifications: ' + JSON.stringify(NOTIFICATIONS.list()));
-// cslog('Notification by ID: ' + JSON.stringify(notifications.getByID("NOTIF_ID-0000000")));
-// cslog('Notification by JID: ' + JSON.stringify(notifications.getByJID("JID-99999")));
-// cslog('Notification by JID: ' + notifications.getByJID("JID-99999").toString());
 
+/* Show the menu */
 show_menu();
 
-//cslog(JSON.stringify(get_notification(undefined,"JID-99999")));
 
-// cslog(JSON.stringify(delete_notification("NOTIF_ID-0000000",undefined)));
-// cslog(JSON.stringify(delete_notification(undefined,"JID-99999")));
-// cslog('Notifications: ' + JSON.stringify(notifications.list()));
 
 
