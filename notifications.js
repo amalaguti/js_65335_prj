@@ -240,7 +240,8 @@ function menu_notifications_actions_by_options(menu_item) {
 
     const menu_items_for_view_notifications = [
         'by status active',
-        'by status terminated'
+        'by status terminated',
+        'by consumers',
     ]
 
     if (menu_item === 'View notification') {
@@ -350,6 +351,14 @@ async function show_menu() {
                         /* View terminated notifications */
                         notifications = NOTIFICATIONS.get_status_terminated();
                         customAlert(`Notifications count ${notifications.length}: ` + notifications);
+                
+                        _lp_flag = confirm('Do you want to continue managing notifications ?');
+                        break;
+
+                    case 5:
+                        /* View by consumers */
+                        consumers = NOTIFICATIONS.get_consumers();
+                        customAlert(`Consumers count ${consumers.length}: ` + JSON.stringify(consumers));
                 
                         _lp_flag = confirm('Do you want to continue managing notifications ?');
                         break;
@@ -602,6 +611,24 @@ class Notifications {
          _NOTIF_STATUS_FINAL = ["completed", "failed", "canceled"];)
         */
         return this.notifications.filter(notification => _NOTIF_STATUS_FINAL.includes(notification.status));
+    }
+
+    get_consumers() {
+        /* Get the consumers and the count of notifications per consumer 
+            returns array of consumers (not notifications instances) sorted by count
+            of notifications per consumer 
+        */
+        const consumerCount = this.notifications.reduce((acc, notification) => {
+            acc[notification.consumer] = (acc[notification.consumer] || 0) + 1;
+            return acc;
+        }, {});
+
+        return Object.keys(consumerCount)
+            .map((consumer) => ({
+            consumer: consumer,
+            count: consumerCount[consumer]
+            }))
+            .sort((a, b) => b.count - a.count);
     }
 }
 
