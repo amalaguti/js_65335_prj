@@ -232,11 +232,21 @@ function menu_notifications_actions() {
 }
 
 function menu_notifications_actions_by_options(menu_item) {
-    const menu_items_by_options = [
+    let menu_items_by_options = [
         'EXIT',
         'by NOTIF_ID',
         'by JID_ID',
     ]
+
+    const menu_items_for_view_notifications = [
+        'by status active',
+        'by status terminated'
+    ]
+
+    if (menu_item === 'View notification') {
+        console.log('Extend menu items for view notifications')
+        menu_items_by_options = menu_items_by_options.concat(menu_items_for_view_notifications)
+    }
 
     menu_items_by_options.forEach((element, index) => {
         // concat the menu item with the option for options other than 'EXIT'
@@ -297,7 +307,7 @@ async function show_menu() {
             
             // VIEW NOTIFICATION
             case 3:
-                /* View notification by NOTIF_ID or by ID*/
+                /* View notification */
                 action = show_menu_by_options(ROOT_MENU_ITEMS[action])
 
                 switch (action) {
@@ -324,6 +334,24 @@ async function show_menu() {
                             _view_notification(notification[0], JID)
                             break
                         }
+                        break;
+
+                    case 3:
+                        /* View notification by active status */
+                        notifications = NOTIFICATIONS.get_status_active();
+                        customAlert(`Notifications count ${notifications.length}: ` + notifications);
+                        
+                        // customAlert(`${NOTIFICATIONS.get_status_active()}`);
+                
+                        _lp_flag = confirm('Do you want to continue managing notifications ?');
+                        break;
+
+                    case 4:
+                        /* View terminated notifications */
+                        notifications = NOTIFICATIONS.get_status_terminated();
+                        customAlert(`Notifications count ${notifications.length}: ` + notifications);
+                
+                        _lp_flag = confirm('Do you want to continue managing notifications ?');
                         break;
                     default:
                         alert('Wrong option');
@@ -448,9 +476,9 @@ async function show_menu() {
 }
 
 function show_menu_by_options(menu_item) {
-    /* Show the menu by options to filter by NOTIF_ID or JID */
+    /* Show the menu by options to filter */
     action = menu_notifications_actions_by_options(menu_item);
-    cslog('Menu filter by NOTIF_ID or JID selected option: ' + action);
+    cslog('Menu filter selected option: ' + action);
     return action
 }
 
