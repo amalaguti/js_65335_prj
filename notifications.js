@@ -30,7 +30,8 @@ const ROOT_MENU_ITEMS = [
     'List all notifications', 
     'View notification', 
     'Delete notification',
-    'Update notification status'
+    'Update notification status',
+    'Save notifications'
 ]
 
 // by NOTIF_ID - Ex: NOTIF_ID-0000000', 
@@ -341,8 +342,6 @@ async function show_menu() {
                         /* View notification by active status */
                         notifications = NOTIFICATIONS.get_status_active();
                         customAlert(`Notifications count ${notifications.length}: ` + notifications);
-                        
-                        // customAlert(`${NOTIFICATIONS.get_status_active()}`);
                 
                         _lp_flag = confirm('Do you want to continue managing notifications ?');
                         break;
@@ -475,6 +474,14 @@ async function show_menu() {
                 _lp_flag = confirm('Do you want to continue managing notifications ?');
                 break;
 
+            case 6:
+                /* Save active notifications to localStorage */
+                notifications = NOTIFICATIONS.get_status_active();
+                customAlert(`Save notifications count ${notifications.length}: ` + notifications);
+                localStorage.setItem("notifications", JSON.stringify(notifications));        
+                _lp_flag = confirm('Do you want to continue managing notifications ?');
+                break;
+
             default:
                 alert('Wrong option');
                 _lp_flag = confirm('Do you want to continue managing notifications ?');
@@ -532,6 +539,11 @@ class Notifications {
     }
 
     add(notification) {
+        // Save data to sessionStorage
+        let notifications = JSON.parse(sessionStorage.getItem("notifications")) || {};
+        notifications[notification.ID] = notification;
+        sessionStorage.setItem("notifications", JSON.stringify(notifications));
+        cslog('Notification added to session storage');
         return this.notifications.push(notification);
     }
     
