@@ -560,6 +560,21 @@ class Notifications {
     count() {
         return this.notifications.length;
     }
+
+
+    get_status_active() {
+        /*
+         _NOTIF_STATUS_START = ["new", "queued", "scheduled"] + _NOTIF_STATUS_RUNNING = ["in-progress", "paused", "delayed"];
+        */
+       return this.notifications.filter(notification => _NOTIF_STATUS_START.concat(_NOTIF_STATUS_RUNNING).includes(notification.status))
+    }
+
+    get_status_terminated() {
+        /* MAP terminated notifications
+         _NOTIF_STATUS_FINAL = ["completed", "failed", "canceled"];)
+        */
+        return this.notifications.filter(notification => _NOTIF_STATUS_FINAL.includes(notification.status));
+    }
 }
 
 /* Create a new instance of Notifications */
