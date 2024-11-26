@@ -7,4 +7,6 @@ function customAlert(text) {
 }
 
 
+
 cslog('Main.js loaded');
+

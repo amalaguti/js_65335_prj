@@ -4,30 +4,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <script src="main.js"></script>
+    <script src="notifications.js"></script>    
+    <link rel="stylesheet" href="./css/style.css">
     <title>NMM - Notifications Manager Module</title>
 </head>
 
 <body>
-    <h1>NMM - Notifications Manager Module</h1>
-    <h2> Curso Javascript </h2>
-    <h3> Com. 65335 </h3>
-    <h4> Proyecto Final (DRAFT) </h4>
-    <div>
-        <p>
+    <div class="body-layout-container">
+        <header>
+            <div>
+                <h1>NMM - Notifications Manager Module</h1>
+                <h2> Curso Javascript </h2>
+                <h3> Com. 65335 </h3>
+                <h4> Proyecto Final (DRAFT) </h4>
+            </div>
+            <div class="header-links">
+                <p>
+                    <a href="https://github.com/amalaguti/js_65335_prj"
+                        target="_blank"><strong>https://github.com/amalaguti/js_65335_prj</strong></a>
+                </p>
+                <p>
+                    <a href="https://amalaguti.github.io/js_65335_prj/"
+                        target="_blank"><strong>https://amalaguti.github.io/js_65335_prj/</strong></a>
+                </p>
+            </div>
+        </header>
+        <main>
+            <div class="controls">
+                <div class="control-button ctrl-btn-new">
+                    <button id="btn-new" onclick="new()">
+                        <p>NEW <span>✨</span></p>
+                    </button>
+                </div>
+                <div class="control-button ctrl-btn-start">
+                    <button id="btn-start" onclick="start()">
+                        <p>START <span>🚀</span></p>
+                    </button>
+                </div>
+                <div class="control-button ctrl-btn-pause">
+                    <button id="btn-pause" onclick="pause()">
+                        <p>PAUSE <span>⏸️</span></p>
+                    </button>
+                </div>
+                <div class="control-button ctrl-btn-terminate">
+                    <button id="btn-terminate" onclick="terminate()">
+                        <p>TERMINATE <span>🛑</span></p>
+                    </button>
+                </div>
+                <div class="control-button ctrl-btn-info">
+                    <button id="btn-info" onclick="info()">
+                        <p>INFO <span>🔍</span></p>
+                    </button>
+                </div>
+                <div class="control-button ctrl-btn-delete">
+                    <button id="btn-delete" onclick="delete()">
+                        <p>DELETE <span>🗑️</span></p>
+                    </button>
+                </div>
 
-            <a href="https://github.com/amalaguti/js_65335_prj"
-                target="_blank"><strong>https://github.com/amalaguti/js_65335_prj</strong></a>
-        </p>
-    </div>
-    <div>
-        <p>
-            <a href="https://amalaguti.github.io/js_65335_prj/"
-                target="_blank"><strong>https://amalaguti.github.io/js_65335_prj/</strong></a>
-        </p>
-    </div>
-    <script src="notifications.js"></script>
+                <div class="control-button ctrl-btn-showAll">
+                    <button id="btn-showAll">
+                        <p>ALL <span>📋</span></p>
+                    </button>
+                </div>
 
+            </div>
+
+            <div class="notifications-panel">
+                <div class="notification-panel notifications-start">
+                    <div>
+                    <h2>START</h2>
+                </div>
+                    <div class="notification-list notification-list-start">
+                        <ul>
+                            <li>Notification 1</li>
+                            <li>Notification 2</li>
+                            <li>Notification 3</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="notification-panel notifications-running">
+                    <div>
+                    <h2>RUNNING</h2>
+                </div>
+                    <div class="notification-list notification-list-running">
+                        <ul>
+                            <li>Notification 4</li>
+                            <li>Notification 5</li>
+                            <li>Notification 6</li>
+                        </ul>
+                    </div>
+
+                </div>
+                <div class="notification-panel notifications-final">
+                    <div>
+                    <h2>FINAL</h2>
+                </div>
+                    <div class="notification-list notification-list-final">
+                        <ul>
+                            <li>Notification 7</li>
+                            <li>Notification 8</li>
+                            <li>Notification 9</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="notification-panel notifications-all">
+                    <div>
+                        <h2>ALL</h2>       
+                        <span class="btn-close" onclick="closeAll()">[X]</span>
+                    </div>
+                    <div class="notification-list notification-list-all">
+                    </div>
+                </div>
+            </div>
+    </div>
+
+    </main>
+    <footer>
+        <div class="footer">
+            <p> &copy; 2024 - Amalaguti </p>
+        </div>
+    </footer>
+    </div>
+    
+    <script>
+    
+
+    </script>
+    <script src="dominteraction.js"></script>
 </body>
 
 </html>

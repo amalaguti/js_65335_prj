@@ -43,7 +43,7 @@ async function get_ip() {
     try {
         const response = await fetch(url);
         if (!response.ok) {
-          throw new Error(`Response status: ${response.status}`);
+          throw new Error(`Response status: response.status}`);
         }
     
         const json = await response.json();
@@ -668,10 +668,10 @@ if (MOCK_CONN) {
 }
 
 /* Show notifications */
-cslog('Notifications: ' + JSON.stringify(NOTIFICATIONS.list()));
+//cslog('Notifications: ' + JSON.stringify(NOTIFICATIONS.list()));
 
 /* Show the menu */
-show_menu();
+//show_menu();
 
 
 
