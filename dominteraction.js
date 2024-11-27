@@ -20,7 +20,7 @@ function showStatusStart() {
     let elemNotificationList = document.querySelector('.notification-list-start');
     
     // Create a list of notifications, build the list with div,ul,li elements and append it to the notifications-all panel
-    buildNotificationList(notifications, elemNotificationList, 'olive')
+    buildNotificationList(notifications, elemNotificationList, 'lightgreen')
 }
 
 function showStatusRunning() {
@@ -29,7 +29,7 @@ function showStatusRunning() {
     let elemNotificationList = document.querySelector('.notification-list-running');
     
     // Create a list of notifications, build the list with div,ul,li elements and append it to the notifications-all panel
-    buildNotificationList(notifications, elemNotificationList, 'yellow')
+    buildNotificationList(notifications, elemNotificationList, 'orange')
 }
 
 function showStatusFinal() {
@@ -38,7 +38,7 @@ function showStatusFinal() {
     let elemNotificationList = document.querySelector('.notification-list-final');
     
     // Create a list of notifications, build the list with div,ul,li elements and append it to the notifications-all panel
-    buildNotificationList(notifications, elemNotificationList, 'lightblue')
+    buildNotificationList(notifications, elemNotificationList)
 }
 
 function closeAll() {
@@ -71,11 +71,28 @@ function buildNotificationList(notifications, elemNotificationList, bg_color) {
         });
         stylingNotificationElement_li(notificationElement_li);
 
-        
+        // Background color of the notification element by status
+        if (_NOTIF_STATUS_FINAL.includes(notification.status)) {
+            if (notification.status == 'completed') {
+                notificationElement_div.style.backgroundColor = 'green'
+            } else if (notification.status == 'canceled') {
+                notificationElement_div.style.backgroundColor = 'yellow'
+            } else if (notification.status == 'failed') {
+                notificationElement_div.style.backgroundColor = 'red'
+            }
+        } else if (_NOTIF_STATUS_RUNNING.includes(notification.status)) {
+            notificationElement_div.style.backgroundColor = 'orange'
+        } else if (_NOTIF_STATUS_START.includes(notification.status)) {
+            notificationElement_div.style.backgroundColor = 'lightgreen'
+        }
+            
+
         notificationElement_li.innerHTML = contentNotification_li(notification);
         notificationElement_ul.appendChild(notificationElement_li);
         notificationElement_div.appendChild(notificationElement_ul);
         elemNotificationList.appendChild(notificationElement_div);
+
+        stylingNotificationElement_span();
     }
 }
 
@@ -93,14 +110,29 @@ function stylingNotificationElement_li(notificationElement_li) {
     notificationElement_li.style.width = '30ch';
     notificationElement_li.style.overflowWrap = 'break-word';
     notificationElement_li.style.padding = '1em';
-
 }
+
 
 function contentNotification_li(notification) {
     // Content of the notification element li
-    cslog(notification);
-    return notification.ID + ' <br> ' + notification.JID + ' <br> ' + notification.status;
+    // cslog(notification);
+    return '<span class="notif_id">' + notification.ID + '</span>' + ' <br> ' + notification.JID + ' <br> ' + '<span class="notif_status">' + notification.status + '</span>';
 }
+
+function stylingNotificationElement_span() {
+    // Styling the notification element span
+    let spans_notif_id = document.querySelectorAll('.notif_id');
+    spans_notif_id.forEach(span => {
+        span.style.fontWeight = 'bold';
+        });
+    
+
+    let spans_notif_status = document.querySelectorAll('.notif_status');
+    spans_notif_status.forEach(span => {
+        span.style.fontWeight = 'bold';
+    });
+}
+
 
 
 

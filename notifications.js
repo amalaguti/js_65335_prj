@@ -670,7 +670,12 @@ if (MOCK_CONN) {
         { ID: "NOTIF_ID-0000000", JID: "JID-11111", status: "new", consumer: "192.168.1.1" },
         { ID: "NOTIF_ID-9999999", JID: "JID-99999", status: "new", consumer: "192.168.1.1" },
         { ID: gen_random_notification_id(), JID: gen_random_jid(), status: "new", consumer: "192.168.1.1" },
+        { ID: gen_random_notification_id(), JID: gen_random_jid(), status: "queued", consumer: "192.168.1.1" },
+        { ID: gen_random_notification_id(), JID: gen_random_jid(), status: "scheduled", consumer: "192.168.1.1" },
+        { ID: gen_random_notification_id(), JID: gen_random_jid(), status: "uncategorized", consumer: "192.168.1.1" },
         { ID: gen_random_notification_id(), JID: gen_random_jid(), status: "in-progress", consumer: "192.168.1.2" },
+        { ID: gen_random_notification_id(), JID: gen_random_jid(), status: "paused", consumer: "192.168.1.2" },
+        { ID: gen_random_notification_id(), JID: gen_random_jid(), status: "delayed", consumer: "192.168.1.2" },
         { ID: gen_random_notification_id(), JID: gen_random_jid(), status: "completed", consumer: "192.168.1.3" },
         { ID: gen_random_notification_id(), JID: gen_random_jid(), status: "failed", consumer: "192.168.1.4" },
         { ID: gen_random_notification_id(), JID: gen_random_jid(), status: "canceled", consumer: "192.168.1.4" }

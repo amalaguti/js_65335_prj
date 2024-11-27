@@ -35,20 +35,22 @@ main {
 
 footer {
     grid-area: footer;
-    position: absolute;
+    position: sticky;
     bottom: 0;
+    background-color: rgb(184, 184, 171);
 }
 
 .controls {
     border: 5px solid black;
     display: flex;
     column-gap: 3em;
-    padding-left: 2em;
     padding-top: 1em;
     padding-bottom: 1em;
     margin-top: 2em;
     margin-bottom: 1em;
     background-color: lightgray;
+    width: calc-size(fit-content, 80%);
+    justify-content: space-evenly;
     
     button {
         border-radius: 20%;
@@ -87,7 +89,7 @@ footer {
     justify-content: space-evenly;
 
     .notification-panel {
-        background-color: tomato;
+        background-color: sandybrown;
         width: 100%;
         border: 5px solid black;
         justify-items: center;
