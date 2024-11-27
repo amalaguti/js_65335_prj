@@ -103,6 +103,13 @@ footer {
             cursor: pointer;
         }
     }
+
+    .notification:hover,
+    .selected {
+        background-color: rgba(25, 70, 134, 0.933) !important;
+        color: white;
+    }
+    
 }
 
 

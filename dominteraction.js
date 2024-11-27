@@ -9,7 +9,7 @@ function showAll() {
     // Fill the notifications-all panel with the notifications
     let notifications = NOTIFICATIONS.list();
     let elemNotificationList = document.querySelector('.notification-list-all');
-    
+
     // Create a list of notifications, build the list with div,ul,li elements and append it to the notifications-all panel
     buildNotificationList(notifications, elemNotificationList, 'lightblue')
 }
@@ -18,7 +18,7 @@ function showStatusStart() {
     // Fill the notifications-all panel with the notifications
     let notifications = NOTIFICATIONS.get_status_start();
     let elemNotificationList = document.querySelector('.notification-list-start');
-    
+
     // Create a list of notifications, build the list with div,ul,li elements and append it to the notifications-all panel
     buildNotificationList(notifications, elemNotificationList, 'lightgreen')
 }
@@ -27,7 +27,7 @@ function showStatusRunning() {
     // Fill the notifications-all panel with the notifications
     let notifications = NOTIFICATIONS.get_status_running();
     let elemNotificationList = document.querySelector('.notification-list-running');
-    
+
     // Create a list of notifications, build the list with div,ul,li elements and append it to the notifications-all panel
     buildNotificationList(notifications, elemNotificationList, 'orange')
 }
@@ -36,7 +36,7 @@ function showStatusFinal() {
     // Fill the notifications-all panel with the notifications
     let notifications = NOTIFICATIONS.get_status_terminated();
     let elemNotificationList = document.querySelector('.notification-list-final');
-    
+
     // Create a list of notifications, build the list with div,ul,li elements and append it to the notifications-all panel
     buildNotificationList(notifications, elemNotificationList)
 }
@@ -57,18 +57,19 @@ function buildNotificationList(notifications, elemNotificationList, bg_color) {
         let notification = notifications[i];
 
         // Create a div element for each notification
+        // Add click event listener and change style on selected
         let notificationElement_div = document.createElement('div');
+        notificationElement_div.classList.add('notification');
         stylingNotificationElement_div(notificationElement_div, bg_color);
+        notificationElement_div.addEventListener('click', function () {
+            styleNotificationSelected(notificationElement_div, notification.ID);
+        });
 
         // Create a ul element for each notification
         let notificationElement_ul = document.createElement('ul');
-        
+
         // Create a li element for each notification
         let notificationElement_li = document.createElement('li');
-        notificationElement_li.addEventListener('click', function() {
-            // Show the notification details when clicking on the notification
-            cslog('Notification clicked: ' + notification.ID);
-        });
         stylingNotificationElement_li(notificationElement_li);
 
         // Background color of the notification element by status
@@ -85,7 +86,7 @@ function buildNotificationList(notifications, elemNotificationList, bg_color) {
         } else if (_NOTIF_STATUS_START.includes(notification.status)) {
             notificationElement_div.style.backgroundColor = 'lightgreen'
         }
-            
+
 
         notificationElement_li.innerHTML = contentNotification_li(notification);
         notificationElement_ul.appendChild(notificationElement_li);
@@ -102,7 +103,7 @@ function stylingNotificationElement_div(notificationElement_div, bg_color) {
     notificationElement_div.style.margin = '10px';
     notificationElement_div.style.border = '1px solid black';
     notificationElement_div.style.backgroundColor = bg_color;
-    
+
 }
 
 function stylingNotificationElement_li(notificationElement_li) {
@@ -124,8 +125,8 @@ function stylingNotificationElement_span() {
     let spans_notif_id = document.querySelectorAll('.notif_id');
     spans_notif_id.forEach(span => {
         span.style.fontWeight = 'bold';
-        });
-    
+    });
+
 
     let spans_notif_status = document.querySelectorAll('.notif_status');
     spans_notif_status.forEach(span => {
@@ -133,20 +134,34 @@ function stylingNotificationElement_span() {
     });
 }
 
+function styleNotificationSelected(notificationElement_div, notif_id) {
+    // Style the notification div element when selected by toggling class selected
+    cslog('Notification clicked: ' + notif_id);
+    notificationElement_div.classList.toggle('selected');
+
+    // Remove the selected class from all other notifications
+    let notifications = document.querySelectorAll('.notification');
+    notifications.forEach(notification => {
+        if (notification !== notificationElement_div) {
+            notification.classList.remove('selected');
+        }
+    });
+
+}
 
 
 
 cslog("DOM Interaction loaded");
 cslog('Notifications: ' + JSON.stringify(NOTIFICATIONS.list()));
 
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     // customAlert("DOM built - Notifications loaded, ready to work");
     cslog("DOM built - Notifications loaded, ready to work");
     // Show the notifications at the start
     showStatusStart()
     showStatusRunning()
     showStatusFinal()
-  });
+});
 
 
 // Add event listener to the Show All button
