@@ -610,7 +610,21 @@ class Notifications {
         return this.notifications.length;
     }
 
+    get_status_start() {
+        /*
+         _NOTIF_STATUS_START = ["new", "queued", "scheduled"]
+        */
+       return this.notifications.filter(notification => _NOTIF_STATUS_START.includes(notification.status))
+    }
 
+    get_status_running() {
+        /*
+         _NOTIF_STATUS_RUNNING = ["in-progress", "paused", "delayed"];
+        */
+       return this.notifications.filter(notification => _NOTIF_STATUS_RUNNING.includes(notification.status))
+    }
+
+    
     get_status_active() {
         /*
          _NOTIF_STATUS_START = ["new", "queued", "scheduled"] + _NOTIF_STATUS_RUNNING = ["in-progress", "paused", "delayed"];
