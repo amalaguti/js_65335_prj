@@ -149,6 +149,14 @@ function styleNotificationSelected(notificationElement_div, notif_id) {
 
 }
 
+async function new_notification() {
+    // Create a new notification
+    notification = await create_notification();
+    NOTIFICATIONS.add(notification)
+    alert(`New notification created ${notification.ID}`);
+    showStatusStart()
+}
+
 
 
 cslog("DOM Interaction loaded");
