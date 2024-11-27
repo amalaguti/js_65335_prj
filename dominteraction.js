@@ -10,9 +10,35 @@ function showAll() {
     let notifications = NOTIFICATIONS.list();
     let elemNotificationList = document.querySelector('.notification-list-all');
     
-    // Create a list of notifications, build the list with div,ul,li elementss and append it to the notifications-all panel
-    buildNotificationList(notifications, elemNotificationList)
+    // Create a list of notifications, build the list with div,ul,li elements and append it to the notifications-all panel
+    buildNotificationList(notifications, elemNotificationList, 'lightblue')
+}
 
+function showStatusStart() {
+    // Fill the notifications-all panel with the notifications
+    let notifications = NOTIFICATIONS.get_status_start();
+    let elemNotificationList = document.querySelector('.notification-list-start');
+    
+    // Create a list of notifications, build the list with div,ul,li elements and append it to the notifications-all panel
+    buildNotificationList(notifications, elemNotificationList, 'olive')
+}
+
+function showStatusRunning() {
+    // Fill the notifications-all panel with the notifications
+    let notifications = NOTIFICATIONS.get_status_running();
+    let elemNotificationList = document.querySelector('.notification-list-running');
+    
+    // Create a list of notifications, build the list with div,ul,li elements and append it to the notifications-all panel
+    buildNotificationList(notifications, elemNotificationList, 'yellow')
+}
+
+function showStatusFinal() {
+    // Fill the notifications-all panel with the notifications
+    let notifications = NOTIFICATIONS.get_status_terminated();
+    let elemNotificationList = document.querySelector('.notification-list-final');
+    
+    // Create a list of notifications, build the list with div,ul,li elements and append it to the notifications-all panel
+    buildNotificationList(notifications, elemNotificationList, 'lightblue')
 }
 
 function closeAll() {
@@ -23,7 +49,7 @@ function closeAll() {
     document.querySelector('.notifications-all').style.display = 'none';
 }
 
-function buildNotificationList(notifications, elemNotificationList) {
+function buildNotificationList(notifications, elemNotificationList, bg_color) {
     // Create a list of notifications, build the list with div,ul,li elements and append it to the notifications panel
     elemNotificationList.innerHTML = '';
 
@@ -32,29 +58,34 @@ function buildNotificationList(notifications, elemNotificationList) {
 
         // Create a div element for each notification
         let notificationElement_div = document.createElement('div');
-        stylingNotificationElement_div(notificationElement_div);
+        stylingNotificationElement_div(notificationElement_div, bg_color);
 
         // Create a ul element for each notification
         let notificationElement_ul = document.createElement('ul');
         
         // Create a li element for each notification
         let notificationElement_li = document.createElement('li');
+        notificationElement_li.addEventListener('click', function() {
+            // Show the notification details when clicking on the notification
+            cslog('Notification clicked: ' + notification.ID);
+        });
         stylingNotificationElement_li(notificationElement_li);
 
         
-        notificationElement_li.innerHTML = notification;
+        notificationElement_li.innerHTML = contentNotification_li(notification);
         notificationElement_ul.appendChild(notificationElement_li);
         notificationElement_div.appendChild(notificationElement_ul);
         elemNotificationList.appendChild(notificationElement_div);
     }
 }
 
-function stylingNotificationElement_div(notificationElement_div) {
+function stylingNotificationElement_div(notificationElement_div, bg_color) {
     // Styling the notification element div
     notificationElement_div.style.display = 'flex';
     notificationElement_div.style.margin = '10px';
     notificationElement_div.style.border = '1px solid black';
-    notificationElement_div.style.backgroundColor = 'lightgrey';
+    notificationElement_div.style.backgroundColor = bg_color;
+    
 }
 
 function stylingNotificationElement_li(notificationElement_li) {
@@ -64,7 +95,13 @@ function stylingNotificationElement_li(notificationElement_li) {
     notificationElement_li.style.padding = '1em';
 
 }
-// # width: 30ch, overflow-wrap: break-word 
+
+function contentNotification_li(notification) {
+    // Content of the notification element li
+    cslog(notification);
+    return notification.ID + ' <br> ' + notification.JID + ' <br> ' + notification.status;
+}
+
 
 
 cslog("DOM Interaction loaded");
@@ -73,9 +110,14 @@ cslog('Notifications: ' + JSON.stringify(NOTIFICATIONS.list()));
 document.addEventListener("DOMContentLoaded", function() {
     // customAlert("DOM built - Notifications loaded, ready to work");
     cslog("DOM built - Notifications loaded, ready to work");
+    // Show the notifications at the start
+    showStatusStart()
+    showStatusRunning()
+    showStatusFinal()
   });
 
 
+// Add event listener to the Show All button
 elem = document.getElementById('btn-showAll')
-cslog('Element: ' + elem)
 elem.addEventListener('click', showAll)
+
