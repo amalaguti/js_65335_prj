@@ -55,6 +55,7 @@ function refresh_panels() {
     showStatusStart()
     showStatusRunning()
     showStatusFinal()
+    showAll()
 }
 
 function buildNotificationList(notifications, elemNotificationList, bg_color) {
@@ -210,6 +211,19 @@ function showNotificationInfo() {
     }
 }
 
+function removeNotification() {
+    // Remove the notification
+    let selected = document.querySelector('.selected');
+    if (selected) {
+        let notif_id = selected.querySelector('.notif_id').textContent;
+        customAlert(`Notification ${notif_id} will be removed`);
+        NOTIFICATIONS.deleteByID(notif_id);
+        refresh_panels();
+    } else {
+        customAlert('Select a notification to remove');
+    }
+}
+
 
 function controlBtnsHandler() {
     // Add event listener to control buttons
@@ -227,8 +241,10 @@ function controlBtnsHandler() {
             btn.addEventListener('click', showAll)
         } else if (btn.classList.contains('ctrl-btn-info')) {
             btn.addEventListener('click', showNotificationInfo)
+        } else if (btn.classList.contains('ctrl-btn-remove')) {
+            btn.addEventListener('click', removeNotification)
         }
-        
+
     });
 }
 

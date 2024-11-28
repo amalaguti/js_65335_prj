@@ -579,7 +579,7 @@ class Notifications {
         if (index > -1) {
             cslog('Deleting notification by ID: ' + this.notifications[index].toString());
             this.notifications.splice(index, 1);
-            cslog('Notification NOTIF_ID ' + NOTIF_ID + ' deleted');
+            cslog('Notification NOTIF_ID ' + ID + ' deleted');
             return true;
         }
         cslog(`Notification NOTIF_ID ${ID} not found`)   
