@@ -162,7 +162,11 @@ async function new_notification(event) {
     // Create a new notification
     notification = await create_notification();
     NOTIFICATIONS.add(notification)
-    alert(`New notification created ${notification.ID}`);
+
+    // Open the modal with the notification info
+    let tblHTML = tableHTML(notification);
+
+    openModal(`<p><b>Notification created</b></p><div>${tblHTML}</div>`);
     showStatusStart()
 }
 
@@ -207,10 +211,9 @@ function showNotificationInfo() {
         notification = NOTIFICATIONS.getByID(notif_id)[0];
 
         //Generate HTML Table rows
-        let tableRows = _tableRows(notification);
-        let table_HTML = _tableHTML(tableRows);
+        let tblHTML = tableHTML(notification);
         // Open the modal with the notification info
-        openModal(table_HTML);
+        openModal(tblHTML);
     } else {
         customAlert('Select a notification to show');
     }
@@ -241,6 +244,14 @@ function _tableHTML(tableBody) {
     </table>
     `
     return table_HTML
+}
+
+function tableHTML(content) {
+    // Table HTML for the notification
+    
+    //Generate HTML Table rows
+    let tableRows = _tableRows(notification);
+    return _tableHTML(tableRows);
 }
 
 function removeNotification() {
@@ -307,15 +318,11 @@ function closeModal() {
 
 cslog("DOM Interaction loaded");
 cslog('Notifications: ' + JSON.stringify(NOTIFICATIONS.list()));
-
 document.addEventListener("DOMContentLoaded", function () {
-    // customAlert("DOM built - Notifications loaded, ready to work");
     cslog("DOM built - Notifications loaded, ready to work");
     // Show the notifications at the start
     refresh_panels();
 });
-
-
 controlBtnsHandler();
 
 
