@@ -198,6 +198,18 @@ function update_status(event) {
     }
 }
 
+function showNotificationInfo() {
+    // Show the notification
+    let selected = document.querySelector('.selected');
+    if (selected) {
+        let notif_id = selected.querySelector('.notif_id').textContent;
+        notification = NOTIFICATIONS.getByID(notif_id)[0];
+        customAlert(JSON.stringify(notification));
+    } else {
+        customAlert('Select a notification to show');
+    }
+}
+
 
 function controlBtnsHandler() {
     // Add event listener to control buttons
@@ -213,7 +225,10 @@ function controlBtnsHandler() {
             btn.addEventListener('click', new_notification)
         } else if (btn.classList.contains('ctrl-btn-showAll')) {
             btn.addEventListener('click', showAll)
+        } else if (btn.classList.contains('ctrl-btn-info')) {
+            btn.addEventListener('click', showNotificationInfo)
         }
+        
     });
 }
 
