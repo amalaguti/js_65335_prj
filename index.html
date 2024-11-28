@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <script src="main.js"></script>
-    <script src="notifications.js"></script>    
+    <script src="notifications.js"></script>
     <link rel="stylesheet" href="./css/style.css">
     <title>NMM - Notifications Manager Module</title>
 </head>
@@ -75,31 +75,31 @@
             <div class="notifications-panel">
                 <div class="notification-panel notifications-start">
                     <div>
-                    <h2>START</h2>
-                </div>
+                        <h2>START</h2>
+                    </div>
                     <div class="notification-list notification-list-start">
                         <!-- ul/li added by JS showStatusStart() -->
                     </div>
                 </div>
                 <div class="notification-panel notifications-running">
                     <div>
-                    <h2>RUNNING</h2>
-                </div>
+                        <h2>RUNNING</h2>
+                    </div>
                     <div class="notification-list notification-list-running">
                         <!-- ul/li added by JS showStatusRunning() -->
                     </div>
                 </div>
                 <div class="notification-panel notifications-final">
                     <div>
-                    <h2>FINAL</h2>
-                </div>
+                        <h2>FINAL</h2>
+                    </div>
                     <div class="notification-list notification-list-final">
                         <!-- ul/li added by JS showStatusFinal() -->
                     </div>
                 </div>
                 <div class="notification-panel notifications-all">
                     <div>
-                        <h2>ALL</h2>       
+                        <h2>ALL</h2>
                         <span class="btn-close" onclick="closeAll()">[X]</span>
                     </div>
                     <div class="notification-list notification-list-all">
@@ -107,19 +107,33 @@
                     </div>
                 </div>
             </div>
+
+
+        </main>
+        <footer>
+            <div class="footer">
+                <p> &copy; 2024 - Amalaguti </p>
+            </div>
+        </footer>
     </div>
 
-    </main>
-    <footer>
-        <div class="footer">
-            <p> &copy; 2024 - Amalaguti </p>
+
+    <!-- Modals -->
+    <!-- Trigger/Open The Modal -->
+    <button id="btn-open-modal">Open Modal</button>
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <span class="btn-close" onclick="closeModal()">[X]</span>
+            <div class="modal-header">
+                <h3>INFO</h3>
+            </div>
+            <div class="modal-body">
+            </div>
         </div>
-    </footer>
     </div>
-    
-    <script>
-    
 
+
+    <script>
     </script>
     <script src="dominteraction.js"></script>
 </body>

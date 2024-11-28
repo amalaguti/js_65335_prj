@@ -205,7 +205,7 @@ function showNotificationInfo() {
     if (selected) {
         let notif_id = selected.querySelector('.notif_id').textContent;
         notification = NOTIFICATIONS.getByID(notif_id)[0];
-        customAlert(JSON.stringify(notification));
+        openModal(JSON.stringify(notification));
     } else {
         customAlert('Select a notification to show');
     }
@@ -248,6 +248,30 @@ function controlBtnsHandler() {
     });
 }
 
+
+function openModal(contentHTML) {
+    // Open the modal
+    let modal = document.querySelector('.modal')
+    modal.style.display = 'block';
+
+    let modal_body = document.querySelector('.modal-body')
+    modal_body.innerHTML = contentHTML;
+
+    window.onclick = function(event) {    
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
+      }
+}
+
+
+function closeModal() {
+    // Close the modal
+    let modal = document.querySelector('.modal')
+    modal.style.display = 'none';
+    }
+
+
 cslog("DOM Interaction loaded");
 cslog('Notifications: ' + JSON.stringify(NOTIFICATIONS.list()));
 
@@ -257,6 +281,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Show the notifications at the start
     refresh_panels();
 });
+
 
 controlBtnsHandler();
 

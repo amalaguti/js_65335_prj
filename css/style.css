@@ -18,8 +18,8 @@ header {
     justify-content: space-between;
     padding-right: 1em;
     padding-left: 0.5em;
-    
-    & > * {
+
+    &>* {
         font-size: 0.6em;
     }
 
@@ -56,7 +56,7 @@ footer {
         margin-right: 1em;
         margin-bottom: 1em;
     }
-    
+
     button {
         border-radius: 20%;
         box-shadow: 5px 3px 3px black;
@@ -74,7 +74,7 @@ footer {
         font-size: 1em;
         font-weight: bolder;
     }
-    
+
     span {
         font-size: 3em;
         padding: 0 !important;
@@ -103,6 +103,7 @@ footer {
             justify-items: center;
             padding: 0 !important;
         }
+
         li {
             list-style: none;
             cursor: pointer;
@@ -114,7 +115,7 @@ footer {
         background-color: rgba(25, 70, 134, 0.933) !important;
         color: white;
     }
-    
+
 }
 
 
@@ -136,7 +137,7 @@ footer {
         display: flex;
         justify-self: center;
         width: 95%;
-    } 
+    }
 
     .btn-close {
         position: absolute;
@@ -157,6 +158,55 @@ footer {
     }
 }
 
+
+/* Modal */
+.modal {
+    display: none;
+    /* Hidden by default */
+    position: fixed;
+    /* Stay in place */
+    z-index: 1;
+    /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%;
+    /* Full width */
+    height: 100%;
+    /* Full height */
+    overflow: auto;
+    /* Enable scroll if needed */
+    background-color: rgb(0, 0, 0);
+    /* Fallback color */
+    background-color: rgba(0, 0, 0, 0.4);
+    /* Black w/ opacity */
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto;
+        /* 15% from the top and centered */
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        /* Could be more or less, depending on screen size */
+    }
+
+    .btn-close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+    .btn-close:hover,
+    .btn-close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+}
+
+
+
+/* Media query for screens smaller than 1200px */
 @media screen and (max-width: 1200px) {
     .body-layout-container {
         grid-template-columns: 1fr 1fr;
@@ -186,10 +236,10 @@ footer {
         justify-items: normal !important;
         padding: 1em;
         width: 95dvw;
-        
+
     }
 
-    .contrlols > * {
+    .contrlols>* {
         display: flex !important;
     }
 
@@ -205,7 +255,7 @@ footer {
         top: 0;
         right: 0;
     }
-    
+
     footer {
         grid-area: footer;
         position: sticky;
