@@ -49,6 +49,14 @@ function closeAll() {
     document.querySelector('.notifications-all').style.display = 'none';
 }
 
+
+function refresh_panels() {
+    // Refresh the panels
+    showStatusStart()
+    showStatusRunning()
+    showStatusFinal()
+}
+
 function buildNotificationList(notifications, elemNotificationList, bg_color) {
     // Create a list of notifications, build the list with div,ul,li elements and append it to the notifications panel
     elemNotificationList.innerHTML = '';
@@ -150,7 +158,7 @@ function styleNotificationSelected(notificationElement_div, notif_id) {
 }
 
 
-async function new_notification() {
+async function new_notification(event) {
     // Create a new notification
     notification = await create_notification();
     NOTIFICATIONS.add(notification)
@@ -161,31 +169,53 @@ async function new_notification() {
 
 function update_status(event) {
     // Update the status of the notification
+    // The status is set based on the selected button
+
     let selected = document.querySelector('.selected');
     if (selected) {
         let notif_id = selected.querySelector('.notif_id').textContent;
         let notif_status = selected.querySelector('.notif_status').textContent;
         notification = NOTIFICATIONS.getByID(notif_id)[0];
-        // cslog(`ADRIAN notification ${notification}`);
-        // cslog(`ADRIAN notif_id ${notif_id}`);
-        // cslog(`ADRIAN notif_status ${notif_status}`);
-        
-        
     } else {
         customAlert('Select a notification to update the status');
         return
     }
-    console.dir(event);
-    new_status = 'in-progress';
-    cslog(new_status);
-    cslog(notification);
+
+    // Update the status based on the button clicked
+    if (event.target.classList.contains('btn-start')) {
+        new_status = 'in-progress';
+    } else if (event.target.classList.contains('btn-pause')) {
+        new_status = prompt('Enter the status\nOptions: "paused", "delayed"');
+    } else if (event.target.classList.contains('btn-terminate')) {
+        new_status = prompt('Enter the status\nOptions: "completed", "failed", "canceled"');
+    }
+
     update = update_notification_status(notification, new_status);
-    cslog(update);
-    showStatusStart()
-    showStatusRunning()
-    showStatusFinal()
+    if (update) {
+        refresh_panels();
+    } else {
+        customAlert('Error updating status');
+    }
 }
 
+
+function controlBtnsHandler() {
+    // Add event listener to control buttons
+    btns = document.querySelectorAll('.control-button')
+    btns.forEach(btn => {
+        // Check what button is clicked and fire the corresponding function
+        let btns_update_status = ['ctrl-btn-start', 'ctrl-btn-pause', 'ctrl-btn-terminate'];
+        if (btns_update_status.some(r => Array.from(btn.classList).includes(r))) {
+            btn.addEventListener('click', (event) => {
+                update_status(event)
+            })
+        } else if (btn.classList.contains('ctrl-btn-new')) {
+            btn.addEventListener('click', new_notification)
+        } else if (btn.classList.contains('ctrl-btn-showAll')) {
+            btn.addEventListener('click', showAll)
+        }
+    });
+}
 
 cslog("DOM Interaction loaded");
 cslog('Notifications: ' + JSON.stringify(NOTIFICATIONS.list()));
@@ -194,13 +224,12 @@ document.addEventListener("DOMContentLoaded", function () {
     // customAlert("DOM built - Notifications loaded, ready to work");
     cslog("DOM built - Notifications loaded, ready to work");
     // Show the notifications at the start
-    showStatusStart()
-    showStatusRunning()
-    showStatusFinal()
+    refresh_panels();
 });
 
+controlBtnsHandler();
 
-// Add event listener to the Show All button
-elem = document.getElementById('btn-showAll')
-elem.addEventListener('click', showAll)
+
+
+
 

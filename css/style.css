@@ -42,15 +42,20 @@ footer {
 
 .controls {
     border: 5px solid black;
-    display: flex;
-    column-gap: 3em;
+    display: block !important;
     padding-top: 1em;
     padding-bottom: 1em;
     margin-top: 2em;
     margin-bottom: 1em;
     background-color: lightgray;
-    width: calc-size(fit-content, 80%);
-    justify-content: space-evenly;
+    max-width: 1200px;
+    padding-left: 1em;
+
+    .control-button {
+        display: inline-flex;
+        margin-right: 1em;
+        margin-bottom: 1em;
+    }
     
     button {
         border-radius: 20%;
