@@ -55,7 +55,6 @@ function refresh_panels() {
     showStatusStart()
     showStatusRunning()
     showStatusFinal()
-    showAll()
 }
 
 function buildNotificationList(notifications, elemNotificationList, bg_color) {
@@ -194,6 +193,7 @@ function update_status(event) {
     update = update_notification_status(notification, new_status);
     if (update) {
         refresh_panels();
+        showAll();
     } else {
         customAlert('Error updating status');
     }
@@ -205,10 +205,42 @@ function showNotificationInfo() {
     if (selected) {
         let notif_id = selected.querySelector('.notif_id').textContent;
         notification = NOTIFICATIONS.getByID(notif_id)[0];
-        openModal(JSON.stringify(notification));
+
+        //Generate HTML Table rows
+        let tableRows = _tableRows(notification);
+        let table_HTML = _tableHTML(tableRows);
+        // Open the modal with the notification info
+        openModal(table_HTML);
     } else {
         customAlert('Select a notification to show');
     }
+}
+
+function _tableRows(content) {
+    // Generate HTML Table rows for the notification
+    let _tRs = ''
+    Object.keys(content).forEach(key => {
+        _row = `<tr><th>${key}</th><td>${content[key]}</td></tr>`;
+        _tRs += _row;
+    });
+    let tableRows = _tRs;
+    
+    return tableRows
+}
+
+function _tableHTML(tableBody) {
+    // Table HTML for the notification
+    let table_HTML = `
+    <table class="data-table">
+        <thead>
+        </thead>
+
+        <tbody>
+        ${tableBody}
+        </tbody>
+    </table>
+    `
+    return table_HTML
 }
 
 function removeNotification() {
@@ -219,6 +251,7 @@ function removeNotification() {
         customAlert(`Notification ${notif_id} will be removed`);
         NOTIFICATIONS.deleteByID(notif_id);
         refresh_panels();
+        showAll();
     } else {
         customAlert('Select a notification to remove');
     }
@@ -257,11 +290,11 @@ function openModal(contentHTML) {
     let modal_body = document.querySelector('.modal-body')
     modal_body.innerHTML = contentHTML;
 
-    window.onclick = function(event) {    
+    window.onclick = function (event) {
         if (event.target == modal) {
-          modal.style.display = "none";
+            modal.style.display = "none";
         }
-      }
+    }
 }
 
 
@@ -269,7 +302,7 @@ function closeModal() {
     // Close the modal
     let modal = document.querySelector('.modal')
     modal.style.display = 'none';
-    }
+}
 
 
 cslog("DOM Interaction loaded");

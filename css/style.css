@@ -202,6 +202,10 @@ footer {
         text-decoration: none;
         cursor: pointer;
     }
+
+    th {
+        text-align: right;
+    }
 }
 
 
@@ -263,3 +267,5 @@ footer {
         background-color: lightgray;
     }
 }
+
+
