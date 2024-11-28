@@ -152,11 +152,15 @@ function validate_update_status_rules(current_status, new_status) {
     return false;
 }
 
-function update_notification_status(notification) {
-    /* Update the status of a notification running validation rules check first */
+function prompt_for_new_status() {
+    /* Prompt for the new status */
     let new_status = prompt('Enter the new status:\n' + NOTIF_STATUS.join('\n'));
 
-    new_status = new_status.toLowerCase();
+    return new_status.toLowerCase();
+}
+
+function update_notification_status(notification, new_status) {
+    /* Update the status of a notification running validation rules check first */
     if (NOTIF_STATUS.includes(new_status)) {
         if (!validate_update_status_rules(notification.status, new_status)) {
             customAlert(`Invalid status change from ${notification.status} to ${new_status}, please check the rules`);
@@ -192,10 +196,10 @@ function _delete_notification(Idx, _ID) {
     }
 }
 
-function _update_status(notification, id) {
+function _update_status(notification, id, new_status) {
     /* Update the status of a notification, used in menu cases logic to reduce code duplication */
     if (notification instanceof Notification) {
-        update = update_notification_status(notification);
+        update = update_notification_status(notification, new_status);
         if (update) {
             customAlert('Notification updated');
             return true
@@ -451,7 +455,8 @@ async function show_menu() {
 
                         if (NOTIF_ID) {
                             notification = get_notification(NOTIF_ID, undefined);
-                            update = _update_status(notification[0], NOTIF_ID);
+                            let new_status = prompt_for_new_status();
+                            update = _update_status(notification[0], NOTIF_ID, new_status);
                             break;
                         }
                         // User canceled the deletion
@@ -462,7 +467,8 @@ async function show_menu() {
 
                         if (JID) {
                             notification = get_notification(undefined, JID);
-                            update = _update_status(notification[0], JID);
+                            let new_status = prompt_for_new_status();
+                            update = _update_status(notification[0], JID, new_status);
                             break;
                         }
                         // User canceled the deletion

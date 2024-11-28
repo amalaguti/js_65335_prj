@@ -149,6 +149,7 @@ function styleNotificationSelected(notificationElement_div, notif_id) {
 
 }
 
+
 async function new_notification() {
     // Create a new notification
     notification = await create_notification();
@@ -157,6 +158,33 @@ async function new_notification() {
     showStatusStart()
 }
 
+
+function update_status(event) {
+    // Update the status of the notification
+    let selected = document.querySelector('.selected');
+    if (selected) {
+        let notif_id = selected.querySelector('.notif_id').textContent;
+        let notif_status = selected.querySelector('.notif_status').textContent;
+        notification = NOTIFICATIONS.getByID(notif_id)[0];
+        // cslog(`ADRIAN notification ${notification}`);
+        // cslog(`ADRIAN notif_id ${notif_id}`);
+        // cslog(`ADRIAN notif_status ${notif_status}`);
+        
+        
+    } else {
+        customAlert('Select a notification to update the status');
+        return
+    }
+    console.dir(event);
+    new_status = 'in-progress';
+    cslog(new_status);
+    cslog(notification);
+    update = update_notification_status(notification, new_status);
+    cslog(update);
+    showStatusStart()
+    showStatusRunning()
+    showStatusFinal()
+}
 
 
 cslog("DOM Interaction loaded");
