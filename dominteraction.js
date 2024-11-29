@@ -361,8 +361,34 @@ document.addEventListener("DOMContentLoaded", function () {
     // Show the notifications at the start
     refresh_panels();
 });
-
 controlBtnsHandler();
+welcome_msg = `
+Notifications module
+Este es un módulo de notificaciones que permite crear, actualizar, eliminar y mostrar notificaciones.
+En este contexto, las notificaciones se refieren a trabajos lanzados por un sistema de gestión de tareas.
+Este dicho sistema, utilizará estas funciones para gestionar los trabajos en curso.
+El sistema que consumirá este módulo está disponible en 
+https://amalaguti.github.io/saltmgmt/
+
+Las notificaciones tienen estados y dichos estados siguen ciertas reglas de transición.
+
+3 grupos de estados: 
+  - Inicio
+  - En curso
+  - Finalizado.
+
+Cada grupo tiene sus estados definidos
+  - START = ["new", "queued", "scheduled"];
+  - RUNNING = ["in-progress", "paused", "delayed"];
+  - FINAL = ["completed", "failed", "canceled"];
+
+las reglas definen las transiciones, por ejemplo, 
+  - una notificación en estado "new" puede pasar a "in-progress" o a "completed".
+  - una notificación en estado "in-progress" puede pasar a "paused" o a "completed".
+  - una notificación en estado "completed" no puede pasar a ningún otro estado.
+`;
+alert(welcome_msg);
+
 
 
 
