@@ -193,8 +193,6 @@ function update_status(event) {
         modalDialogOpen_options(["paused", "delayed"]);
         modalDialogOpen();
     } else if (event.target.classList.contains('btn-terminate')) {
-        //new_status = prompt('Enter the status\nOptions: "completed", "failed", "canceled"');
-        //_update_status(notification, new_status)
         modalDialogOpen_options(["completed", "failed", "canceled"]);
         modalDialogOpen();
     }
@@ -340,6 +338,9 @@ function modalDialogOpen() {
     // "Cancel" button closes the dialog without submitting because of [formmethod="dialog"], triggering a close event.
     optsDialog.addEventListener("close", (e) => {
         let new_status = optsDialog.returnValue
+        // Forced to use event.stopImmediatePropagation() due update function was triggerd multiple times (2 or 3)
+        // error started to happen due modal implementation
+        e.stopImmediatePropagation()
         _update_status(notification, new_status);
     });
 
