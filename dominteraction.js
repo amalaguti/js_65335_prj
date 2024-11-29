@@ -167,13 +167,13 @@ async function new_notification(event) {
     let tblHTML = tableHTML(notification);
 
     openModal(`<p><b>Notification created</b></p><div>${tblHTML}</div>`);
-    showStatusStart()
+    refresh_panels();
 }
 
 
 function update_status(event) {
     // Update the status of the notification
-    // The status is set based on the selected button
+    // The notification is picked from the selected button
 
     let selected = document.querySelector('.selected');
     if (selected) {
@@ -188,34 +188,23 @@ function update_status(event) {
     // Update the status based on the button clicked
     if (event.target.classList.contains('btn-start')) {
         new_status = 'in-progress';
+        _update_status(notification, new_status)
     } else if (event.target.classList.contains('btn-pause')) {
-        new_status = prompt('Enter the status\nOptions: "paused", "delayed"');
-
-        //new_status = modalDialog();
-        //cslog('ADRIAN new_status: ' + new_status);
-        
-        // _prompt = `
-        // <div class="prompt">
-        // <label for="pause-status-select">Choose a status:</label>
-        // <select id="pause-status-select">
-        //     <option value="paused">Paused</option>
-        //     <option value="delayed">Delayed</option>
-        // </select>
-        // <button onclick="submitStatus()">Submit</button>
-        // </div>
-        // `
-        // openModal(_prompt);
-        // let statusSelect = document.getElementById('pause-status-select');
-        // let new_status = statusSelect.value;
-        // cslog('Prompt: ' + new_status);
+        modalDialogOpen_options(["paused", "delayed"]);
+        modalDialogOpen();
     } else if (event.target.classList.contains('btn-terminate')) {
-        new_status = prompt('Enter the status\nOptions: "completed", "failed", "canceled"');
+        //new_status = prompt('Enter the status\nOptions: "completed", "failed", "canceled"');
+        //_update_status(notification, new_status)
+        modalDialogOpen_options(["completed", "failed", "canceled"]);
+        modalDialogOpen();
     }
+}
 
+function _update_status(notification, new_status) {
+    // Update the status of the notification
     update = update_notification_status(notification, new_status);
     if (update) {
         refresh_panels();
-        //showAll();
     } else {
         customAlert('Error updating status');
     }
@@ -245,7 +234,7 @@ function _tableRows(content) {
         _tRs += _row;
     });
     let tableRows = _tRs;
-    
+
     return tableRows
 }
 
@@ -266,7 +255,7 @@ function _tableHTML(tableBody) {
 
 function tableHTML(content) {
     // Table HTML for the notification
-    
+
     //Generate HTML Table rows
     let tableRows = _tableRows(notification);
     return _tableHTML(tableRows);
@@ -331,7 +320,37 @@ function closeModal() {
     modal.style.display = 'none';
 }
 
+function modalDialogOpen_options(options) {
+    // Fill the modal dialog with options
+    let optionsHTML = document.querySelector('.optsDialog-select');
+    _optionsHTML = '';
+    options.forEach(option => {
+        _optionsHTML += `<option>${option}</option>`;
+        });
 
+    optionsHTML.innerHTML = _optionsHTML;
+
+}
+function modalDialogOpen() {
+    const optsDialog = document.getElementById("optsDialog");
+    const selectEl = optsDialog.querySelector("select");
+    const confirmBtn = optsDialog.querySelector("#confirmBtn");
+
+    optsDialog.showModal();
+    // "Cancel" button closes the dialog without submitting because of [formmethod="dialog"], triggering a close event.
+    optsDialog.addEventListener("close", (e) => {
+        let new_status = optsDialog.returnValue
+        _update_status(notification, new_status);
+    });
+
+    // Prevent the "confirm" button from the default behavior of submitting the form, and close the dialog with the `close()` method, which triggers the "close" event.
+    confirmBtn.addEventListener("click", (event) => {
+        event.preventDefault(); // We don't want to submit this fake form
+        optsDialog.close(selectEl.value); // Have to send the select box value here.
+
+    });
+
+}
 
 cslog("DOM Interaction loaded");
 cslog('Notifications: ' + JSON.stringify(NOTIFICATIONS.list()));
@@ -340,6 +359,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Show the notifications at the start
     refresh_panels();
 });
+
 controlBtnsHandler();
 
 

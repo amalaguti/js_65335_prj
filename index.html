@@ -120,7 +120,6 @@
 
     <!-- Modals -->
     <!-- Trigger/Open The Modal -->
-    <button id="btn-open-modal">Open Modal</button>
     <div class="modal" id="modal">
         <div class="modal-content">
             <span class="btn-close" onclick="closeModal()">[X]</span>
@@ -129,6 +128,26 @@
             <div class="modal-body">
             </div>
         </div>
+    </div>
+
+    <!-- Dialog for Options -->
+    <!-- A modal dialog containing a form -->
+    <div>
+        <dialog id="optsDialog">
+            <form>
+                <p>
+                    <label class="optsDialog-label">
+                        Choose status:
+                        <select class="optsDialog-select">
+                        </select>
+                    </label>
+                </p>
+                <div>
+                    <button value="cancel" formmethod="dialog">Cancel</button>
+                    <button id="confirmBtn" value="default">Confirm</button>
+                </div>
+            </form>
+        </dialog>
     </div>
 
 
