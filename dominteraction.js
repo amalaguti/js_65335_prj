@@ -111,6 +111,7 @@ function stylingNotificationElement_div(notificationElement_div, bg_color) {
     notificationElement_div.style.margin = '10px';
     notificationElement_div.style.border = '1px solid black';
     notificationElement_div.style.backgroundColor = bg_color;
+    notificationElement_div.style.borderRadius = '5px';
 
 }
 

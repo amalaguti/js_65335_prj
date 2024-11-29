@@ -92,12 +92,15 @@ footer {
     grid-area: notifications-panel;
     display: flex;
     justify-content: space-evenly;
+    
 
     .notification-panel {
         background-color: sandybrown;
         width: 100%;
         border: 5px solid black;
         justify-items: center;
+        margin-bottom: 2em;
+        padding-bottom: 2em;
 
         ul {
             justify-items: center;
