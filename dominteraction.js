@@ -190,6 +190,24 @@ function update_status(event) {
         new_status = 'in-progress';
     } else if (event.target.classList.contains('btn-pause')) {
         new_status = prompt('Enter the status\nOptions: "paused", "delayed"');
+
+        //new_status = modalDialog();
+        //cslog('ADRIAN new_status: ' + new_status);
+        
+        // _prompt = `
+        // <div class="prompt">
+        // <label for="pause-status-select">Choose a status:</label>
+        // <select id="pause-status-select">
+        //     <option value="paused">Paused</option>
+        //     <option value="delayed">Delayed</option>
+        // </select>
+        // <button onclick="submitStatus()">Submit</button>
+        // </div>
+        // `
+        // openModal(_prompt);
+        // let statusSelect = document.getElementById('pause-status-select');
+        // let new_status = statusSelect.value;
+        // cslog('Prompt: ' + new_status);
     } else if (event.target.classList.contains('btn-terminate')) {
         new_status = prompt('Enter the status\nOptions: "completed", "failed", "canceled"');
     }
@@ -197,7 +215,7 @@ function update_status(event) {
     update = update_notification_status(notification, new_status);
     if (update) {
         refresh_panels();
-        showAll();
+        //showAll();
     } else {
         customAlert('Error updating status');
     }
@@ -262,7 +280,7 @@ function removeNotification() {
         customAlert(`Notification ${notif_id} will be removed`);
         NOTIFICATIONS.deleteByID(notif_id);
         refresh_panels();
-        showAll();
+        //showAll();
     } else {
         customAlert('Select a notification to remove');
     }
@@ -307,13 +325,12 @@ function openModal(contentHTML) {
         }
     }
 }
-
-
 function closeModal() {
     // Close the modal
     let modal = document.querySelector('.modal')
     modal.style.display = 'none';
 }
+
 
 
 cslog("DOM Interaction loaded");
