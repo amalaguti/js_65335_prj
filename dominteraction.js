@@ -55,6 +55,7 @@ function refresh_panels() {
     showStatusStart()
     showStatusRunning()
     showStatusFinal()
+    cslog('Notifications list refreshed');
 }
 
 function buildNotificationList(notifications, elemNotificationList, bg_color) {
@@ -354,14 +355,34 @@ function modalDialogOpen() {
 
 }
 
+async function toast_refresh_panels() {
+    // Toast notification for refreshing the panels
+    const Toast = Swal.mixin({
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.onmouseenter = Swal.stopTimer;
+          toast.onmouseleave = Swal.resumeTimer;
+        }
+      });
+      await Toast.fire({
+        icon: "success",
+        title: "Notifications refreshed",
+      });
+}
+
+
+
 cslog("DOM Interaction loaded");
 cslog('Notifications: ' + JSON.stringify(NOTIFICATIONS.list()));
 document.addEventListener("DOMContentLoaded", function () {
     cslog("DOM built - Notifications loaded, ready to work");
-    // Show the notifications at the start
-    refresh_panels();
 });
+
 controlBtnsHandler();
-
-
+refresh_panels();
+welcome();
 

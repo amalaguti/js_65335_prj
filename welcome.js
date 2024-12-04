@@ -51,91 +51,45 @@ Use the control panel buttons to change the status of a notification, add a new 
 To modify a notification, you must first select the notification from the corresponding notifications panel and then select the desired action from the control panel buttons.
 `;
 
-// Show Intro messages
-Swal.fire({
-    title: "Notifications module",
-    html: `<div style="text-align: left;">${msg_1}</div>`,
-    icon: "info",
-    backdrop: false,
-    confirmButtonText: `Continue ➡️`,
-    didClose: () => {
-        Swal.fire({
-            title: "Categories",
-            html: `<div style="text-align: left;">${msg_2}</div>`,
-            footer: "I will close in <counter></counter> seconds.",
-            timer: 10000,
-            confirmButtonText: `OK ➡️`,
-            didOpen: () => {
-                Swal.showLoading(Swal.getConfirmButton());
-                Swal.hideLoading();
-                const timer = Swal.getPopup().querySelector("counter");
-                timerInterval = setInterval(() => {
-                    timer.textContent = `${Math.round(Swal.getTimerLeft() / 1000)}`;
-                }, 1000);
-            },
-            willClose: () => {
-                clearInterval(timerInterval);
-            },
-            didClose: () => {
-                Swal.fire({
-                    title: "Statuses",
-                    html: `<div style="text-align: left;">${msg_3}</div>`,
-                    footer: "I will close in <counter></counter> seconds.",
-                    timer: 10000,
-                    confirmButtonText: `OK ➡️`,
-                    didOpen: () => {
-                        Swal.showLoading(Swal.getConfirmButton());
-                        Swal.hideLoading();
-                        const timer = Swal.getPopup().querySelector("counter");
-                        timerInterval = setInterval(() => {
-                            timer.textContent = `${Math.round(Swal.getTimerLeft() / 1000)}`;
-                        }, 1000);
-                    },
-                    willClose: () => {
-                        clearInterval(timerInterval);
-                    },
-                    didClose: () => {
-                        Swal.fire({
-                            title: "Transitions",
-                            html: `<div style="text-align: left;">${msg_4}</div>`,
-                            footer: "I will close in <counter></counter> seconds.",
-                            timer: 10000,
-                            confirmButtonText: `OK ➡️`,
-                            didOpen: () => {
-                                Swal.showLoading(Swal.getConfirmButton());
-                                Swal.hideLoading();
-                                const timer = Swal.getPopup().querySelector("counter");
-                                timerInterval = setInterval(() => {
-                                    timer.textContent = `${Math.round(Swal.getTimerLeft() / 1000)}`;
-                                }, 1000);
-                            },
-                            willClose: () => {
-                                clearInterval(timerInterval);
-                            },
-                            didClose: () => {
-                                Swal.fire({
-                                    title: "Control Panel",
-                                    html: `<div style="text-align: left;">${msg_5}</div>`,
-                                    footer: "I will close in <counter></counter> seconds.",
-                                    timer: 10000,
-                                    confirmButtonText: `OK ➡️`,
-                                    didOpen: () => {
-                                        Swal.showLoading(Swal.getConfirmButton());
-                                        Swal.hideLoading();
-                                        const timer = Swal.getPopup().querySelector("counter");
-                                        timerInterval = setInterval(() => {
-                                            timer.textContent = `${Math.round(Swal.getTimerLeft() / 1000)}`;
-                                        }, 1000);
-                                    },
-                                    willClose: () => {
-                                        clearInterval(timerInterval);
-                                    }
-                                });
-                            }
-                        });
-                    }
-                });
-            }
-        });
+
+async function welcome() {
+    const steps = ['1', '2', '3', '4', '5']
+    const Queue = Swal.mixin({
+        progressSteps: steps,
+        confirmButtonText: 'Next >',
+        // optional classes to avoid backdrop blinking between steps
+        // showClass: { backdrop: 'swal2-noanimation' },
+        // hideClass: { backdrop: 'swal2-noanimation' },
+        timer: 10000,
+        timerProgressBar: true,
+    })
+    
+    ;(async () => {
+        await Queue.fire(swalProgressStep(0, "Notifications module", `<div style="text-align: left;">${msg_1}</div>`))
+        await Queue.fire(swalProgressStep(1, "Categories", `<div style="text-align: left;">${msg_2}</div>`))
+        await Queue.fire(swalProgressStep(2, "Statuses", `<div style="text-align: left;">${msg_3}</div>`))
+        await Queue.fire(swalProgressStep(3, "Transitions", `<div style="text-align: left;">${msg_4}</div>`))
+        await Queue.fire(swalProgressStep(4, "Control Panel", `<div style="text-align: left;">${msg_5}</div>`))
+    })()
+}
+
+function swalProgressStep(currentProgressStep, title, html) {
+    return {
+        currentProgressStep: currentProgressStep,
+        title: title,
+        html: html,
+        footer: "I will automatically close in <counter></counter> seconds.",
+
+        didOpen: () => {
+            Swal.showLoading(Swal.getConfirmButton());
+            Swal.hideLoading();
+            const timer = Swal.getPopup().querySelector("counter");
+            timerInterval = setInterval(() => {
+                timer.textContent = `${Math.round(Swal.getTimerLeft() / 1000)}`;
+            }, 1000);
+        },
+        willClose: () => {
+            clearInterval(timerInterval);
+        },
     }
-});
+}
