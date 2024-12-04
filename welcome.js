@@ -53,6 +53,7 @@ To modify a notification, you must first select the notification from the corres
 
 
 async function welcome() {
+    cslog("Welcome to the Notifications module!")
     const steps = ['1', '2', '3', '4', '5']
     const Queue = Swal.mixin({
         progressSteps: steps,
@@ -62,7 +63,9 @@ async function welcome() {
         // hideClass: { backdrop: 'swal2-noanimation' },
         timer: 10000,
         timerProgressBar: true,
+        backdrop: true
     })
+    
     
     ;(async () => {
         await Queue.fire(swalProgressStep(0, "Notifications module", `<div style="text-align: left;">${msg_1}</div>`))
@@ -70,10 +73,16 @@ async function welcome() {
         await Queue.fire(swalProgressStep(2, "Statuses", `<div style="text-align: left;">${msg_3}</div>`))
         await Queue.fire(swalProgressStep(3, "Transitions", `<div style="text-align: left;">${msg_4}</div>`))
         await Queue.fire(swalProgressStep(4, "Control Panel", `<div style="text-align: left;">${msg_5}</div>`))
+        
+        // Forced to avoid Swal popup collision
+        start()
     })()
+
 }
 
 function swalProgressStep(currentProgressStep, title, html) {
+    // Generate a progress step for the Swal queue
+    console.log(`Step ${currentProgressStep}: ${title}`)
     return {
         currentProgressStep: currentProgressStep,
         title: title,

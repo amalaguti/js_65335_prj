@@ -326,7 +326,7 @@ function modalDialogOpen_options(options) {
     _optionsHTML = '';
     options.forEach(option => {
         _optionsHTML += `<option>${option}</option>`;
-        });
+    });
 
     optionsHTML.innerHTML = _optionsHTML;
 
@@ -352,29 +352,48 @@ function modalDialogOpen() {
         optsDialog.close(selectEl.value); // Have to send the select box value here.
 
     });
-
 }
 
 async function toast_refresh_panels() {
+    cslog("Toast notification for refreshing the panels");
     // Toast notification for refreshing the panels
     const Toast = Swal.mixin({
         toast: true,
         position: "top-end",
         showConfirmButton: false,
-        timer: 3000,
+        timer: 10000,
         timerProgressBar: true,
         didOpen: (toast) => {
-          toast.onmouseenter = Swal.stopTimer;
-          toast.onmouseleave = Swal.resumeTimer;
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
         }
-      });
-      await Toast.fire({
-        icon: "success",
-        title: "Notifications refreshed",
-      });
+    });
+    // Toast.fire({
+    //     icon: "success",
+    //     title: "Notifications refreshed",
+    // });
+
+    while (swal.isVisible() && swal.getTitle().textContent == "Control Panel") {
+        console.log("OTHER SWAL OPEN YET, sleeping 1s");
+        await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+
+    ; (async () => {
+        await Toast.fire({
+            icon: "success",
+            title: "Notifications refreshed",
+        });
+    })()
+
 }
 
 
+function start() {
+    controlBtnsHandler();
+    // welcome(); // commented out for now, clashes with toast_refresh_panels() popup
+    refresh_panels();
+    toast_refresh_panels();
+}
 
 cslog("DOM Interaction loaded");
 cslog('Notifications: ' + JSON.stringify(NOTIFICATIONS.list()));
@@ -382,7 +401,8 @@ document.addEventListener("DOMContentLoaded", function () {
     cslog("DOM built - Notifications loaded, ready to work");
 });
 
-controlBtnsHandler();
-refresh_panels();
+
+// start(); // Commented out to show the welcome message first (and call start from welcome() function)
 welcome();
+
 
