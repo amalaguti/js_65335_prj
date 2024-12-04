@@ -56,6 +56,7 @@ function refresh_panels() {
     showStatusRunning()
     showStatusFinal()
     cslog('Notifications list refreshed');
+    toast_refresh_panels();
 }
 
 function buildNotificationList(notifications, elemNotificationList, bg_color) {
@@ -361,7 +362,7 @@ async function toast_refresh_panels() {
         toast: true,
         position: "top-end",
         showConfirmButton: false,
-        timer: 10000,
+        timer: 3000,
         timerProgressBar: true,
         didOpen: (toast) => {
             toast.onmouseenter = Swal.stopTimer;
@@ -373,8 +374,8 @@ async function toast_refresh_panels() {
     //     title: "Notifications refreshed",
     // });
 
-    while (swal.isVisible() && swal.getTitle().textContent == "Control Panel") {
-        console.log("OTHER SWAL OPEN YET, sleeping 1s");
+    while (swal.isVisible()) {              // && swal.getTitle().textContent == "Control Panel") {    
+        cslog("OTHER SWAL OPEN YET, sleeping 1s");
         await new Promise(resolve => setTimeout(resolve, 1000));
     }
 
@@ -392,7 +393,6 @@ function start() {
     controlBtnsHandler();
     // welcome(); // commented out for now, clashes with toast_refresh_panels() popup
     refresh_panels();
-    toast_refresh_panels();
 }
 
 cslog("DOM Interaction loaded");
