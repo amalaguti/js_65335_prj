@@ -74,7 +74,7 @@ async function create_notification() {
     */
     let client_ip = await get_ip();
     let JID = gen_random_jid();
-    notification = new Notification(gen_random_notification_id(),JID,"new",client_ip);
+    notification = new Notification(gen_random_notification_id(),JID,"new",client_ip, dt_now_str());
     cslog('Notification created: ' + notification.toString());
     return notification;
 }
@@ -508,11 +508,13 @@ function show_menu_by_options(menu_item) {
 
 /* Class representing a notification object */
 class Notification {
-    constructor(ID, JID, status, consumer) {
+    constructor(ID, JID, status, consumer, dateTime) {
         this.ID = ID;
         this.JID = JID;
         this.status = status.toLowerCase();
         this.consumer = consumer;
+        this.creation = dateTime;
+        this.last_update = dateTime;
     }
 
     toString() {
@@ -673,22 +675,22 @@ if (MOCK_CONN) {
 
     /* Array of mocked notifications */
    _NOTIFICATIONS = [
-        { ID: "NOTIF_ID-0000000", JID: "JID-11111", status: "new", consumer: "192.168.1.1" },
-        { ID: "NOTIF_ID-9999999", JID: "JID-99999", status: "new", consumer: "192.168.1.1" },
-        { ID: gen_random_notification_id(), JID: gen_random_jid(), status: "new", consumer: "192.168.1.1" },
-        { ID: gen_random_notification_id(), JID: gen_random_jid(), status: "queued", consumer: "192.168.1.1" },
-        { ID: gen_random_notification_id(), JID: gen_random_jid(), status: "scheduled", consumer: "192.168.1.1" },
-        { ID: gen_random_notification_id(), JID: gen_random_jid(), status: "uncategorized", consumer: "192.168.1.1" },
-        { ID: gen_random_notification_id(), JID: gen_random_jid(), status: "in-progress", consumer: "192.168.1.2" },
-        { ID: gen_random_notification_id(), JID: gen_random_jid(), status: "paused", consumer: "192.168.1.2" },
-        { ID: gen_random_notification_id(), JID: gen_random_jid(), status: "delayed", consumer: "192.168.1.2" },
-        { ID: gen_random_notification_id(), JID: gen_random_jid(), status: "completed", consumer: "192.168.1.3" },
-        { ID: gen_random_notification_id(), JID: gen_random_jid(), status: "failed", consumer: "192.168.1.4" },
-        { ID: gen_random_notification_id(), JID: gen_random_jid(), status: "canceled", consumer: "192.168.1.4" }
+        { ID: "NOTIF_ID-0000000", JID: "JID-11111", status: "new", consumer: "192.168.1.1", dateTime: dt_now_str() },
+        { ID: "NOTIF_ID-9999999", JID: "JID-99999", status: "new", consumer: "192.168.1.1", dateTime: dt_now_str() },
+        { ID: gen_random_notification_id(), JID: gen_random_jid(), status: "new", consumer: "192.168.1.1", dateTime: dt_now_str() },
+        { ID: gen_random_notification_id(), JID: gen_random_jid(), status: "queued", consumer: "192.168.1.1", dateTime: dt_now_str() },
+        { ID: gen_random_notification_id(), JID: gen_random_jid(), status: "scheduled", consumer: "192.168.1.1", dateTime: dt_now_str() },
+        { ID: gen_random_notification_id(), JID: gen_random_jid(), status: "uncategorized", consumer: "192.168.1.1", dateTime: dt_now_str() },
+        { ID: gen_random_notification_id(), JID: gen_random_jid(), status: "in-progress", consumer: "192.168.1.2", dateTime: dt_now_str() },
+        { ID: gen_random_notification_id(), JID: gen_random_jid(), status: "paused", consumer: "192.168.1.2", dateTime: dt_now_str() },
+        { ID: gen_random_notification_id(), JID: gen_random_jid(), status: "delayed", consumer: "192.168.1.2", dateTime: dt_now_str() },
+        { ID: gen_random_notification_id(), JID: gen_random_jid(), status: "completed", consumer: "192.168.1.3", dateTime: dt_now_str() },
+        { ID: gen_random_notification_id(), JID: gen_random_jid(), status: "failed", consumer: "192.168.1.4", dateTime: dt_now_str() },
+        { ID: gen_random_notification_id(), JID: gen_random_jid(), status: "canceled", consumer: "192.168.1.4", dateTime: dt_now_str() },
     ];     
 
     for  (let _notification of _NOTIFICATIONS) {
-        NOTIFICATIONS.add(new Notification(_notification.ID, _notification.JID, _notification.status, _notification.consumer));
+        NOTIFICATIONS.add(new Notification(_notification.ID, _notification.JID, _notification.status, _notification.consumer, _notification.dateTime));
     }
 }
 
@@ -697,7 +699,6 @@ if (MOCK_CONN) {
 
 /* Show the menu */
 //show_menu();
-
 
 
 
