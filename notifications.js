@@ -535,7 +535,8 @@ class Notification {
 
     update_status(status) {
         cslog(`Updating to status ${status.toLowerCase()} for notification ID: ${this.ID} - JID:${this.JID}`);
-        this.status = status.toLowerCase();;
+        this.status = status.toLowerCase();
+        this.last_update = dt_now_str();
     }
     
 }

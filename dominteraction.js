@@ -391,7 +391,6 @@ async function toast_refresh_panels() {
 
 function start() {
     controlBtnsHandler();
-    // welcome(); // commented out for now, clashes with toast_refresh_panels() popup
     refresh_panels();
 }
 
@@ -402,7 +401,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-// start(); // Commented out to show the welcome message first (and call start from welcome() function)
+//start(); // Commented out to show the welcome message first (and call start from welcome() function)
 welcome();
 
 
