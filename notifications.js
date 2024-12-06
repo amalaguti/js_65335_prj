@@ -168,15 +168,7 @@ function update_notification_status(notification, new_status) {
     }
 }
 
-function _view_notification(notification, _ID) {
-    /* View notification, used in menu cases logic to reduce code duplication */
-    if (notification instanceof Notification) {
-        cslog(`View notification ${_ID} outcome: ${notification.toString()}`);
-        customAlert('Notification: ' + notification.toString());
-    } else {
-        customAlert(`Notification ${_ID} not found`);
-    }
-}
+
 
 function _delete_notification(Idx, _ID) {
     deletion = NOTIFICATIONS.deleteByIdx(Idx);
@@ -401,8 +393,7 @@ if (MOCK_CONN) {
 /* Show notifications */
 //cslog('Notifications: ' + JSON.stringify(NOTIFICATIONS.list()));
 
-/* Show the menu */
-//show_menu();
+
 
 
 

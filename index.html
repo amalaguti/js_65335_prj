@@ -20,6 +20,9 @@
 
     <!-- Welcome messages -->
     <script src="welcome.js"></script>
+
+    <!-- User Menu - UNUSED -->
+    <script src="menu.js"></script>
     
     <link rel="stylesheet" href="./css/style.css">
     
@@ -82,6 +85,17 @@
                 <div class="control-button ctrl-btn-showAll">
                     <button id="btn-showAll">
                         <p>ALL <span>📋</span></p>
+                    </button>
+                </div>
+
+                <div class="control-button ctrl-btn-showMenu">
+                    <button id="btn-showMenu">
+                        <p>console menu <br>(DEPRECATED)<span>🖥️</span></p>
+                        <script>
+                            document.getElementById("btn-showMenu").addEventListener("click", function() {
+                                show_menu();
+                            });
+                        </script>
                     </button>
                 </div>
 
