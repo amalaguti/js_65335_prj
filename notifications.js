@@ -371,12 +371,16 @@ class Notifications {
             .sort((a, b) => b.count - a.count);
     }
 
-    get_aged_notifications(unit='seconds', check_last_update=false, age_limit=10, include_final=true) {
-        /* Get the aged notifications since creation or since last_update */
+    get_aged_notifications(unit='seconds', check_last_update=false, age_limit=10, include_final=true, expire_max_last_update=30) {
+        /* Get the aged notifications since creation or since last_update(check_last_update bool) */
+        /* use check_last_update to get the aging since last_update instead of since creation */
+        /* expire_max_last_update is the max age of a notification since last_update to be considered expired */
+        
         const notifications = this.notifications.filter(notification => notification.get_aging(unit, check_last_update) > age_limit);
         // Iclude all notifications, including those finalized
         if (include_final) {
-            return notifications
+            //return notifications
+            return notifications.filter(notification => dt_age(notification.last_update, dt_now_str(), unit = unit) > expire_max_last_update);
         }
 
         // Exclude finalized notifications
