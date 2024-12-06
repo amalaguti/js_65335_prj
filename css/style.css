@@ -41,13 +41,14 @@ footer {
 }
 
 .controls {
-    border: 5px solid black;
+    /* border: 5px solid black; */
+    /* background-color: lightgray; */
+    border-radius: 10px;
     display: block !important;
     padding-top: 1em;
     padding-bottom: 1em;
     margin-top: 2em;
     margin-bottom: 1em;
-    background-color: lightgray;
     max-width: 1200px;
     padding-left: 1em;
 

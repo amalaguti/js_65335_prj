@@ -233,8 +233,19 @@ class Notification {
         this.status = status.toLowerCase();
         this.last_update = dt_now_str();
     }
+
+
+    get_aging(unit='seconds', last_update=false) {
+        /* Return the aging of the notification since creation or since last_update */
+        console.log(unit, last_update);
+        if (last_update) {
+            return dt_age(this.last_update, dt_now_str(), unit);
+        }
+        return dt_age(this.creation, dt_now_str(), unit);
+    }
     
 }
+
 
 /* Class to manage notifications objects*/
 class Notifications {
@@ -359,6 +370,11 @@ class Notifications {
             count: consumerCount[consumer]
             }))
             .sort((a, b) => b.count - a.count);
+    }
+
+    get_aged_notifications(unit='seconds', last_update=false, age_limit=10) {
+        /* Get the aged notifications since creation or since last_update */
+        return this.notifications.filter(notification => notification.get_aging(unit, last_update) > age_limit);
     }
 }
 

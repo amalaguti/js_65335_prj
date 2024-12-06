@@ -402,20 +402,58 @@ async function toast_refresh_panels() {
 
 }
 
+function toastify(text, duration=3000, gravity="top", position="center", bgcolor="black", color="white") {
+    Toastify({
+        text: text,
+        duration: duration,
+        gravity: gravity, // `top` or `bottom`
+        position: position, // `left`, `center` or `right`
+        style: {
+            background: bgcolor,
+            color: color,
+            fontSize: "24px",
+            borderRadius: "8px",
+            padding: "10px 20px",
+            boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)"
+        },
+        onClick: function(){} // Callback after click
+    }).showToast();
+}
 
-function start() {
-    controlBtnsHandler();
-    refresh_panels();
+function check_aged_notifications(every=5, unit='seconds', age_limit=10) {
+    // Interval to check aged notifications
+    // Notifications with last_update greater than age_limit
+    const milliseconds = 1000
+
+
+    toastify(`Checking aged notifications every ${every} seconds`);
+
+    setInterval(() => {
+        const aged_notifications = NOTIFICATIONS.get_aged_notifications(unit='seconds', last_update=true, age_limit=10)
+        console.log('Aged notifications: ', aged_notifications.length);
+        if (aged_notifications.length > 0) {
+            toastify(`Aged notifications: ${aged_notifications.length}`,duration=3000, gravity="top", position="center", bgcolor="orange", color="white");
+            
+        }
+    }, every * milliseconds);
+    
 }
 
 cslog("DOM Interaction loaded");
 cslog('Notifications: ' + JSON.stringify(NOTIFICATIONS.list()));
 document.addEventListener("DOMContentLoaded", function () {
     cslog("DOM built - Notifications loaded, ready to work");
+    toastify("DOM built - Notifications loaded, ready to work");
 });
 
+function start() {
+    controlBtnsHandler();
+    refresh_panels();
+    check_aged_notifications();
+}
 
 //start(); // Commented out to show the welcome message first (and call start from welcome() function)
 welcome();
+
 
 
