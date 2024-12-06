@@ -3,7 +3,26 @@ function cslog(text) {
 }
 
 function customAlert(text) {
-    alert(">>>> " + text);
+    // alert(">>>> " + text);
+    Swal.fire({
+        title: "Alert",
+        text: text,
+        icon: "warning",
+        showClass: {
+          popup: `
+            animate__animated
+            animate__fadeInUp
+            animate__faster
+          `
+        },
+        hideClass: {
+          popup: `
+            animate__animated
+            animate__fadeOutDown
+            animate__faster
+          `
+        }
+      });
 }
 
 function customAlert_console(text) {

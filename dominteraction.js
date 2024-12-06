@@ -207,7 +207,7 @@ function _update_status(notification, new_status) {
     if (update) {
         refresh_panels();
     } else {
-        customAlert('Error updating status');
+        customAlert('Error updating status - verify status transition rules');
     }
 }
 
