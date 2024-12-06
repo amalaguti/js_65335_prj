@@ -235,10 +235,9 @@ class Notification {
     }
 
 
-    get_aging(unit='seconds', last_update=false) {
+    get_aging(unit='seconds', check_last_update=false) {
         /* Return the aging of the notification since creation or since last_update */
-        console.log(unit, last_update);
-        if (last_update) {
+        if (check_last_update) {
             return dt_age(this.last_update, dt_now_str(), unit);
         }
         return dt_age(this.creation, dt_now_str(), unit);
@@ -372,9 +371,16 @@ class Notifications {
             .sort((a, b) => b.count - a.count);
     }
 
-    get_aged_notifications(unit='seconds', last_update=false, age_limit=10) {
+    get_aged_notifications(unit='seconds', check_last_update=false, age_limit=10, include_final=true) {
         /* Get the aged notifications since creation or since last_update */
-        return this.notifications.filter(notification => notification.get_aging(unit, last_update) > age_limit);
+        const notifications = this.notifications.filter(notification => notification.get_aging(unit, check_last_update) > age_limit);
+        // Iclude all notifications, including those finalized
+        if (include_final) {
+            return notifications
+        }
+
+        // Exclude finalized notifications
+        return notifications.filter(notification => !_NOTIF_STATUS_FINAL.includes(notification.status));
     }
 }
 

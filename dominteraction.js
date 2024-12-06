@@ -414,29 +414,52 @@ function toastify(text, duration=3000, gravity="top", position="center", bgcolor
             fontSize: "24px",
             borderRadius: "8px",
             padding: "10px 20px",
-            boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)"
+            boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+            height: "100px",
+            width: "fit-content",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
         },
         onClick: function(){} // Callback after click
     }).showToast();
 }
 
 function check_aged_notifications(every=5, unit='seconds', age_limit=10) {
-    // Interval to check aged notifications
+    // Interval to check for aged notifications
     // Notifications with last_update greater than age_limit
+    // Finalized notifications are excluded
     const milliseconds = 1000
-
 
     toastify(`Checking aged notifications every ${every} seconds`);
 
     setInterval(() => {
-        const aged_notifications = NOTIFICATIONS.get_aged_notifications(unit='seconds', last_update=true, age_limit=10)
+        const aged_notifications = NOTIFICATIONS.get_aged_notifications(unit='seconds', check_last_update=true, age_limit=age_limit, include_final=false)
         console.log('Aged notifications: ', aged_notifications.length);
         if (aged_notifications.length > 0) {
             toastify(`Aged notifications: ${aged_notifications.length}`,duration=3000, gravity="top", position="center", bgcolor="orange", color="white");
             
         }
-    }, every * milliseconds);
-    
+    }, every * milliseconds);   
+}
+
+function check_expired_notifications(every=10, unit='seconds', age_limit=30) {
+    // Interval to check for expired notifications
+    // Notifications with creation time greater than age_limit
+    // This notifications should have been concluded or they are orphaned
+    // Safely to remove 
+    const milliseconds = 1000
+
+    toastify(`Checking expired notifications every ${every} seconds`);
+
+    setInterval(() => {
+        const expired_notifications = NOTIFICATIONS.get_aged_notifications(unit='seconds', check_last_update=false, age_limit=age_limit, include_final=true)
+        console.log('Expired notifications: ', expired_notifications.length);
+        if (expired_notifications.length > 0) {
+            toastify(`Expired notifications: ${expired_notifications.length}`,duration=3000, gravity="top", position="center", bgcolor="orange", color="white");
+            
+        }
+    }, every * milliseconds);   
 }
 
 cslog("DOM Interaction loaded");
@@ -449,7 +472,8 @@ document.addEventListener("DOMContentLoaded", function () {
 function start() {
     controlBtnsHandler();
     refresh_panels();
-    check_aged_notifications();
+    check_aged_notifications(every=5, unit='seconds', age_limit=10);
+    check_expired_notifications(every=10, unit='seconds', age_limit=30);
 }
 
 //start(); // Commented out to show the welcome message first (and call start from welcome() function)
