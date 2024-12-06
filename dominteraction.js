@@ -322,7 +322,7 @@ function closeModal() {
 }
 
 function modalDialogOpen_options(options) {
-    // Fill the modal dialog with options
+    // Fill the select in the modal dialog with options
     let optionsHTML = document.querySelector('.optsDialog-select');
     _optionsHTML = '';
     options.forEach(option => {
@@ -336,6 +336,7 @@ function modalDialogOpen() {
     const optsDialog = document.getElementById("optsDialog");
     const selectEl = optsDialog.querySelector("select");
     const confirmBtn = optsDialog.querySelector("#confirmBtn");
+    const cancelBtn = optsDialog.querySelector("#cancelBtn");
 
     optsDialog.showModal();
     // "Cancel" button closes the dialog without submitting because of [formmethod="dialog"], triggering a close event.
@@ -344,16 +345,29 @@ function modalDialogOpen() {
         // Forced to use event.stopImmediatePropagation() due update function was triggerd multiple times (2 or 3)
         // error started to happen due modal implementation
         e.stopImmediatePropagation()
-        _update_status(notification, new_status);
+        console.log("Dialog closed with returnValue: ", new_status);
+        if (new_status != "cancel") {
+            _update_status(notification, new_status);
+        }
     });
 
-    // Prevent the "confirm" button from the default behavior of submitting the form, and close the dialog with the `close()` method, which triggers the "close" event.
-    confirmBtn.addEventListener("click", (event) => {
-        event.preventDefault(); // We don't want to submit this fake form
-        optsDialog.close(selectEl.value); // Have to send the select box value here.
+    // Add event listeners to the modal buttons "confirm" and "cancel"
+    addEvtListeners_toModalButtons(selectEl);
 
-    });
 }
+
+function addEvtListeners_toModalButtons(selectEl) {
+        // Prevent the "confirm" button from the default behavior of submitting the form, and close the dialog with the `close()` method, which triggers the "close" event.
+        confirmBtn.addEventListener("click", (event) => {
+            event.preventDefault(); // We don't want to submit this fake form
+            optsDialog.close(selectEl.value); // Have to send the select box value here.
+        });
+        cancelBtn.addEventListener("click", (event) => {
+            event.preventDefault(); // We don't want to submit this fake form
+            optsDialog.close(cancelBtn.value); // Have to send the select box value here.
+        });
+}
+
 
 async function toast_refresh_panels() {
     cslog("Toast notification for refreshing the panels");
