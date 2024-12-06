@@ -12,9 +12,9 @@ function _view_notification(notification, _ID) {
     /* View notification, used in menu cases logic to reduce code duplication */
     if (notification instanceof Notification) {
         cslog(`View notification ${_ID} outcome: ${notification.toString()}`);
-        customAlert('Notification: ' + notification.toString());
+        customAlert_console('Notification: ' + notification.toString());
     } else {
-        customAlert(`Notification ${_ID} not found`);
+        customAlert_console(`Notification ${_ID} not found`);
     }
 }
 
@@ -84,12 +84,12 @@ async function show_menu() {
                 notification = await create_notification();
 
                 if (notification instanceof Notification) {
-                    customAlert('Notification created: ' + notification.toString());
+                    customAlert_console('Notification created: ' + notification.toString());
                     cslog('Notification added at position: ' + (NOTIFICATIONS.add(notification)-1));
                     cslog('Notifications count: ' + NOTIFICATIONS.count());
                 } else {
                     cslog('Notification NOT created');
-                    customAlert('Notification NOT created');
+                    customAlert_console('Notification NOT created');
                 }
                 _lp_flag = confirm('Do you want to continue managing notifications ?');
                 break;
@@ -100,7 +100,7 @@ async function show_menu() {
                 /* List notifications */                
                 cslog('Menu Option 2: ' + NOTIFICATIONS.list());
                 cslog('Notifications count: ' + NOTIFICATIONS.count());
-                customAlert(`Notifications count ${NOTIFICATIONS.count()}: ` + NOTIFICATIONS.list());
+                customAlert_console(`Notifications count ${NOTIFICATIONS.count()}: ` + NOTIFICATIONS.list());
                 
                 _lp_flag = confirm('Do you want to continue managing notifications ?');
                 break;
@@ -140,7 +140,7 @@ async function show_menu() {
                     case 3:
                         /* View notification by active status */
                         notifications = NOTIFICATIONS.get_status_active();
-                        customAlert(`Notifications count ${notifications.length}: ` + notifications);
+                        customAlert_console(`Notifications count ${notifications.length}: ` + notifications);
                 
                         _lp_flag = confirm('Do you want to continue managing notifications ?');
                         break;
@@ -148,7 +148,7 @@ async function show_menu() {
                     case 4:
                         /* View terminated notifications */
                         notifications = NOTIFICATIONS.get_status_terminated();
-                        customAlert(`Notifications count ${notifications.length}: ` + notifications);
+                        customAlert_console(`Notifications count ${notifications.length}: ` + notifications);
                 
                         _lp_flag = confirm('Do you want to continue managing notifications ?');
                         break;
@@ -156,7 +156,7 @@ async function show_menu() {
                     case 5:
                         /* View by consumers */
                         consumers = NOTIFICATIONS.get_consumers();
-                        customAlert(`Consumers count ${consumers.length}: ` + JSON.stringify(consumers));
+                        customAlert_console(`Consumers count ${consumers.length}: ` + JSON.stringify(consumers));
                 
                         _lp_flag = confirm('Do you want to continue managing notifications ?');
                         break;
@@ -198,7 +198,7 @@ async function show_menu() {
                                     break;
                                 }
                             }
-                            customAlert(`Notification NOTIF_ID ${NOTIF_ID} not found`);
+                            customAlert_console(`Notification NOTIF_ID ${NOTIF_ID} not found`);
                             break;
                         }
                         break;
@@ -222,7 +222,7 @@ async function show_menu() {
                                     break;
                                 }
                             }
-                            customAlert(`Notification JID ${JID} not found`);
+                            customAlert_console(`Notification JID ${JID} not found`);
                             break;
                         }
                         break;
@@ -278,7 +278,7 @@ async function show_menu() {
             case 6:
                 /* Save active notifications to localStorage */
                 notifications = NOTIFICATIONS.get_status_active();
-                customAlert(`Save notifications count ${notifications.length}: ` + notifications);
+                customAlert_console(`Save notifications count ${notifications.length}: ` + notifications);
                 localStorage.setItem("notifications", JSON.stringify(notifications));        
                 _lp_flag = confirm('Do you want to continue managing notifications ?');
                 break;
