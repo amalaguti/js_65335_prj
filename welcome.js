@@ -50,11 +50,17 @@ msg_5 = `
 Use the control panel buttons to change the status of a notification, add a new notification, or delete an existing one.<br>
 To modify a notification, you must first select the notification from the corresponding notifications panel and then select the desired action from the control panel buttons.
 `;
+msg_6 = `
+A background task checks the notifications age and expiration date every defined interval of seconds.<br>
+<strong>Expired notifications are removed from the panel at intervals</strong><br>
+<strong>Age</strong> is the time elapsed since the notification was created, or since it was last updated.<br>
+<strong>Expired</strong> is the notification that has reached the expiration date since creation and has not been recently updated.
+`;
 
 
 async function welcome() {
     cslog("Welcome to the Notifications module!")
-    const steps = ['1', '2', '3', '4', '5']
+    const steps = ['1', '2', '3', '4', '5', '6']
     const Queue = Swal.mixin({
         progressSteps: steps,
         confirmButtonText: 'Next >',
@@ -73,6 +79,7 @@ async function welcome() {
         await Queue.fire(swalProgressStep(2, "Statuses", `<div style="text-align: left;">${msg_3}</div>`))
         await Queue.fire(swalProgressStep(3, "Transitions", `<div style="text-align: left;">${msg_4}</div>`))
         await Queue.fire(swalProgressStep(4, "Control Panel", `<div style="text-align: left;">${msg_5}</div>`))
+        await Queue.fire(swalProgressStep(5, "Aged and expired", `<div style="text-align: left;">${msg_6}</div>`))
         
         // Forced to avoid Swal popup collision
         start()
