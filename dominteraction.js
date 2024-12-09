@@ -73,6 +73,8 @@ function buildNotificationList(notifications, elemNotificationList, bg_color) {
         stylingNotificationElement_div(notificationElement_div, bg_color);
         notificationElement_div.addEventListener('click', function () {
             styleNotificationSelected(notificationElement_div, notification.ID);
+            addNotificationToSessionStorage(notification);
+            loadNotificationInfoSection();
         });
 
         // Create a ul element for each notification
@@ -124,11 +126,15 @@ function stylingNotificationElement_li(notificationElement_li) {
     notificationElement_li.style.padding = '1em';
 }
 
-
 function contentNotification_li(notification) {
     // Content of the notification element li
     // cslog(notification);
-    return '<span class="notif_id">' + notification.ID + '</span>' + ' <br> ' + notification.JID + ' <br> ' + '<span class="notif_status">' + notification.status + '</span>';
+    const content = `
+    <span class="notif_id">${notification.ID}</span><br> 
+    ${notification.JID}<br>
+    <span class="notif_status">${notification.status}</span>
+    `
+    return  content;
 }
 
 function stylingNotificationElement_span() {
@@ -160,6 +166,37 @@ function styleNotificationSelected(notificationElement_div, notif_id) {
 
 }
 
+function addNotificationToSessionStorage(notification) {
+    // Add the notification to the session storage
+    cslog('Notification added to session storage ' + notification.ID);
+    sessionStorage.setItem('selected-notification', JSON.stringify(notification));
+}
+
+function removeNotificationFromSessionStorage() {
+    // Add the notification to the session storage
+    sessionStorage.removeItem('selected-notification');
+}
+
+function loadNotificationInfoSection() {
+    // Open the notification info section
+    //document.querySelector('.notification-info').style.display = 'block';
+    const notification = JSON.parse(sessionStorage.getItem('selected-notification'));
+    cslog('Notification info section opened' + notification.ID);
+    const div_openNotification = document.querySelector('.openNotification');
+    div_openNotification.innerHTML = JSON.stringify(notification);
+    div_openNotification.style.visibility = 'visible';
+    div_openNotification.style.display = 'inline-block';
+    
+}
+
+function cleanNotificationInfoSection() {
+    // Open the notification info section
+    const div_openNotification = document.querySelector('.openNotification');
+    div_openNotification.innerHTML = '';
+    div_openNotification.style.visibility = 'hidden';
+    div_openNotification.style.display = 'none';
+    
+}
 
 async function new_notification(event) {
     // Create a new notification
@@ -171,6 +208,7 @@ async function new_notification(event) {
 
     openModal(`<p><b>Notification created</b></p><div>${tblHTML}</div>`);
     refresh_panels();
+    cleanNotificationInfoSection()
 }
 
 
@@ -206,6 +244,7 @@ function _update_status(notification, new_status) {
     update = update_notification_status(notification, new_status);
     if (update) {
         refresh_panels();
+        cleanNotificationInfoSection()
     } else {
         customAlert('Error updating status - verify status transition rules');
     }
@@ -267,9 +306,11 @@ function removeNotification() {
     let selected = document.querySelector('.selected');
     if (selected) {
         let notif_id = selected.querySelector('.notif_id').textContent;
-        customAlert(`Notification ${notif_id} will be removed`);
+        customAlert(`Notification ${notif_id} removed`);
         NOTIFICATIONS.deleteByID(notif_id);
+        removeNotificationFromSessionStorage(notif_id);
         refresh_panels();
+        cleanNotificationInfoSection()
         //showAll();
     } else {
         customAlert('Select a notification to remove');
@@ -473,6 +514,7 @@ function remove_notifications(notifications) {
         NOTIFICATIONS.deleteByID(notification.ID);
     });
     refresh_panels();
+    cleanNotificationInfoSection()
 
 }
 
@@ -483,13 +525,15 @@ document.addEventListener("DOMContentLoaded", function () {
     toastify("DOM built - Notifications loaded, ready to work");
 });
 
+
 function start() {
     controlBtnsHandler();
     refresh_panels();
+    
     check_aged_notifications(every=5, unit='seconds', age_limit=10);
     check_expired_notifications(every=10, unit='seconds', age_limit=30, remove=true, expire_max_last_update=30);
-    
 }
+
 
 //start(); // Commented out to show the welcome message first (and call start from welcome() function)
 welcome();
