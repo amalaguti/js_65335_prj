@@ -1,3 +1,3 @@
 # Things to do
-Incorporar libreria Toast para mostrar mensajes de tipo toast
-Incorporar libreria Luxon para manejo de fechas
+get notification from sessionStorage instead of passing it as argument
+remove notification ID  for NOTIFICATIONS in session storage
