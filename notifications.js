@@ -255,7 +255,6 @@ class Notifications {
     add(notification) {
         // Save data to sessionStorage
         let notifications = JSON.parse(sessionStorage.getItem("notifications")) || {};
-        notifications[notification.ID] = notification;
         sessionStorage.setItem("notifications", JSON.stringify(notifications));
         cslog('Notification added to session storage');
         return this.notifications.push(notification);
