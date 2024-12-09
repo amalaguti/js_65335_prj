@@ -134,7 +134,7 @@ function contentNotification_li(notification) {
     ${notification.JID}<br>
     <span class="notif_status">${notification.status}</span>
     `
-    return  content;
+    return content;
 }
 
 function stylingNotificationElement_span() {
@@ -179,14 +179,13 @@ function removeNotificationFromSessionStorage() {
 
 function loadNotificationInfoSection() {
     // Open the notification info section
-    //document.querySelector('.notification-info').style.display = 'block';
     const notification = JSON.parse(sessionStorage.getItem('selected-notification'));
-    cslog('Notification info section opened' + notification.ID);
+    cslog('Notification info section loaded: ' + notification.ID);
     const div_openNotification = document.querySelector('.openNotification');
     div_openNotification.innerHTML = JSON.stringify(notification);
     div_openNotification.style.visibility = 'visible';
     div_openNotification.style.display = 'inline-block';
-    
+
 }
 
 function cleanNotificationInfoSection() {
@@ -195,7 +194,7 @@ function cleanNotificationInfoSection() {
     div_openNotification.innerHTML = '';
     div_openNotification.style.visibility = 'hidden';
     div_openNotification.style.display = 'none';
-    
+
 }
 
 async function new_notification(event) {
@@ -216,20 +215,30 @@ function update_status(event) {
     // Update the status of the notification
     // The notification is picked from the selected button
 
-    let selected = document.querySelector('.selected');
-    if (selected) {
-        let notif_id = selected.querySelector('.notif_id').textContent;
-        let notif_status = selected.querySelector('.notif_status').textContent;
-        notification = NOTIFICATIONS.getByID(notif_id)[0];
+    //let selected = document.querySelector('.selected');
+
+    // if (selected) {
+    //     let notif_id = selected.querySelector('.notif_id').textContent;
+    //     let notif_status = selected.querySelector('.notif_status').textContent;
+    //     notification = NOTIFICATIONS.getByID(notif_id)[0];
+    // } else {
+    //     customAlert('Select a notification to update the status');
+    //     return
+    // }
+    const notification = JSON.parse(sessionStorage.getItem('selected-notification'));
+    if (notification) {
+        cslog('Notification selected: ' + notification.ID);
     } else {
         customAlert('Select a notification to update the status');
         return
     }
 
+    cslog('Notification status update: ' + notification.ID);
+
     // Update the status based on the button clicked
     if (event.target.classList.contains('btn-start')) {
         new_status = 'in-progress';
-        _update_status(notification, new_status)
+        _update_status(new_status)
     } else if (event.target.classList.contains('btn-pause')) {
         modalDialogOpen_options(["paused", "delayed"]);
         modalDialogOpen();
@@ -239,8 +248,10 @@ function update_status(event) {
     }
 }
 
-function _update_status(notification, new_status) {
+function _update_status(new_status) {
     // Update the status of the notification
+    const notification = NOTIFICATIONS.getByID(JSON.parse(sessionStorage.getItem('selected-notification')).ID)[0];
+    
     update = update_notification_status(notification, new_status);
     if (update) {
         refresh_panels();
@@ -388,7 +399,7 @@ function modalDialogOpen() {
         e.stopImmediatePropagation()
         console.log("Dialog closed with returnValue: ", new_status);
         if (new_status != "cancel") {
-            _update_status(notification, new_status);
+            _update_status(new_status);
         }
     });
 
@@ -398,15 +409,15 @@ function modalDialogOpen() {
 }
 
 function addEvtListeners_toModalButtons(selectEl) {
-        // Prevent the "confirm" button from the default behavior of submitting the form, and close the dialog with the `close()` method, which triggers the "close" event.
-        confirmBtn.addEventListener("click", (event) => {
-            event.preventDefault(); // We don't want to submit this fake form
-            optsDialog.close(selectEl.value); // Have to send the select box value here.
-        });
-        cancelBtn.addEventListener("click", (event) => {
-            event.preventDefault(); // We don't want to submit this fake form
-            optsDialog.close(cancelBtn.value); // Have to send the select box value here.
-        });
+    // Prevent the "confirm" button from the default behavior of submitting the form, and close the dialog with the `close()` method, which triggers the "close" event.
+    confirmBtn.addEventListener("click", (event) => {
+        event.preventDefault(); // We don't want to submit this fake form
+        optsDialog.close(selectEl.value); // Have to send the select box value here.
+    });
+    cancelBtn.addEventListener("click", (event) => {
+        event.preventDefault(); // We don't want to submit this fake form
+        optsDialog.close(cancelBtn.value); // Have to send the select box value here.
+    });
 }
 
 
@@ -443,7 +454,7 @@ async function toast_refresh_panels() {
 
 }
 
-function toastify(text, duration=3000, gravity="top", position="center", bgcolor="black", color="white") {
+function toastify(text, duration = 3000, gravity = "top", position = "center", bgcolor = "black", color = "white") {
     Toastify({
         text: text,
         duration: duration,
@@ -462,11 +473,11 @@ function toastify(text, duration=3000, gravity="top", position="center", bgcolor
             alignItems: "center",
             justifyContent: "center",
         },
-        onClick: function(){} // Callback after click
+        onClick: function () { } // Callback after click
     }).showToast();
 }
 
-function check_aged_notifications(every=5, unit='seconds', age_limit=10) {
+function check_aged_notifications(every = 5, unit = 'seconds', age_limit = 10) {
     // Interval to check for aged notifications
     // Notifications with last_update greater than age_limit
     // Finalized notifications are excluded
@@ -475,15 +486,15 @@ function check_aged_notifications(every=5, unit='seconds', age_limit=10) {
     toastify(`Checking aged notifications every ${every} seconds`);
 
     setInterval(() => {
-        const aged_notifications = NOTIFICATIONS.get_aged_notifications(unit='seconds', check_last_update=true, age_limit=age_limit, include_final=false)
+        const aged_notifications = NOTIFICATIONS.get_aged_notifications(unit = 'seconds', check_last_update = true, age_limit = age_limit, include_final = false)
         console.log('Aged notifications: ', aged_notifications.length);
         if (aged_notifications.length > 0) {
-            toastify(`Aged notifications: ${aged_notifications.length}`,duration=3000, gravity="top", position="center", bgcolor="orange", color="white");            
+            toastify(`Aged notifications: ${aged_notifications.length}`, duration = 3000, gravity = "top", position = "center", bgcolor = "orange", color = "white");
         }
     }, every * milliseconds);
 }
 
-function check_expired_notifications(every=10, unit='seconds', age_limit=30, remove=false,expire_max_last_update=30) {
+function check_expired_notifications(every = 10, unit = 'seconds', age_limit = 30, remove = false, expire_max_last_update = 30) {
     // Interval to check for expired notifications
     // Notifications with creation time greater than age_limit
     // This notifications should have been concluded or they are orphaned
@@ -493,23 +504,23 @@ function check_expired_notifications(every=10, unit='seconds', age_limit=30, rem
     toastify(`Checking expired notifications every ${every} seconds`);
 
     setInterval(() => {
-        const expired_notifications = NOTIFICATIONS.get_aged_notifications(unit='seconds', check_last_update=false, age_limit=age_limit, include_final=true, expire_max_last_update=expire_max_last_update)
+        const expired_notifications = NOTIFICATIONS.get_aged_notifications(unit = 'seconds', check_last_update = false, age_limit = age_limit, include_final = true, expire_max_last_update = expire_max_last_update)
         console.log('Expired notifications: ', expired_notifications.length);
         if (expired_notifications.length > 0) {
-            toastify(`Expired notifications: ${expired_notifications.length}`,duration=5000, gravity="top", position="center", bgcolor="yellow", color="black");
+            toastify(`Expired notifications: ${expired_notifications.length}`, duration = 5000, gravity = "top", position = "center", bgcolor = "yellow", color = "black");
 
             if (remove) {
                 remove_notifications(expired_notifications);
             }
         }
-    }, every * milliseconds);   
+    }, every * milliseconds);
 }
 
 function remove_notifications(notifications) {
     // Remove expired notifications
     console.log('Expired notifications: ', notifications.length);
-    
-    toastify(`Remove notifications count: ${notifications.length}`,duration=10000, gravity="bottom", position="center", bgcolor="red", color="white");
+
+    toastify(`Remove notifications count: ${notifications.length}`, duration = 10000, gravity = "bottom", position = "center", bgcolor = "red", color = "white");
     notifications.forEach(notification => {
         NOTIFICATIONS.deleteByID(notification.ID);
     });
@@ -529,7 +540,7 @@ document.addEventListener("DOMContentLoaded", function () {
 function start() {
     controlBtnsHandler();
     refresh_panels();
-    
+
     check_aged_notifications(every=5, unit='seconds', age_limit=10);
     check_expired_notifications(every=10, unit='seconds', age_limit=30, remove=true, expire_max_last_update=30);
 }
