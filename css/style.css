@@ -5,11 +5,10 @@
 .body-layout-container {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: auto 1fr 50px;
+    grid-template-rows: auto 1fr;
     grid-template-areas:
         "header header header"
         "main main main"
-        "footer footer footer";
 }
 
 header {
@@ -17,7 +16,7 @@ header {
     display: flex;
     justify-content: space-between;
     padding-right: 1em;
-    padding-left: 0.5em;
+    padding-left: 1em;
 
     &>* {
         font-size: 0.6em;
@@ -31,13 +30,6 @@ header {
 
 main {
     grid-area: main;
-}
-
-footer {
-    grid-area: footer;
-    position: sticky;
-    bottom: 0;
-    background-color: rgb(184, 184, 171);
 }
 
 .controls {
@@ -93,7 +85,8 @@ footer {
 .notifications-panel {
     grid-area: notifications-panel;
     display: flex;
-    justify-content: space-evenly;
+    justify-self: center;
+    width: 95%;
     
 
     .notification-panel {
@@ -163,6 +156,10 @@ footer {
     }
 }
 
+.notifications-spa {
+    display: none;
+}
+
 .openNotification {
     visibility: hidden;
     display: none;
@@ -174,6 +171,7 @@ footer {
     overflow-wrap: anywhere;
     padding: 10px;
     margin-left: 1em;
+
 
     position: sticky;
     top: 0;
@@ -282,18 +280,15 @@ footer {
 @media screen and (max-width: 1200px) {
     .body-layout-container {
         grid-template-columns: 1fr 1fr;
-        grid-template-rows: auto 1fr 50px;
+        grid-template-rows: auto 1fr;
         grid-template-areas:
             "header header"
             "main main"
-            "main main"
-            "footer footer";
     }
 
     header {
         display: flex;
         flex-direction: column;
-        padding: 0;
     }
 
     .header-links {
@@ -318,7 +313,8 @@ footer {
     .notifications-panel {
         display: flex;
         flex-direction: column;
-        width: 95dvw;
+        width: 95%;
+        
     }
 
     .notifications-all {
@@ -328,12 +324,41 @@ footer {
         right: 0;
     }
 
-    footer {
-        grid-area: footer;
-        position: sticky;
-        bottom: 0;
-        background-color: lightgray;
+    .notifications-start {
+        display: none;
     }
+    .notifications-running {
+        display: none;
+    }
+    .notifications-final {
+        display: none;
+    }
+
+    .openNotification {
+        margin-left: 0;
+        width: 95%;
+    }
+
+    .notifications-spa {
+        display: flex;
+        justify-content: space-evenly;
+        padding-top: 1em; 
+
+        button {
+            border-radius: 10%;
+            box-shadow: 5px 3px 3px black;
+            background-color: seagreen;
+            width: 15ch;
+            color: white;
+        }
+    
+        button:hover {
+            background-color: tomato;
+            transform: scale(1.1);
+        }
+    }
+
+
 }
 
 

@@ -14,28 +14,28 @@ function showAll() {
     buildNotificationList(notifications, elemNotificationList, 'lightblue')
 }
 
-function showStatusStart() {
+function showStatusStart(selElemNotificationList='.notification-list-start') {
     // Fill the notifications-all panel with the notifications
     let notifications = NOTIFICATIONS.get_status_start();
-    let elemNotificationList = document.querySelector('.notification-list-start');
+    let elemNotificationList = document.querySelector(selElemNotificationList);
 
     // Create a list of notifications, build the list with div,ul,li elements and append it to the notifications-all panel
     buildNotificationList(notifications, elemNotificationList, 'lightgreen')
 }
 
-function showStatusRunning() {
+function showStatusRunning(selElemNotificationList='.notification-list-running') {
     // Fill the notifications-all panel with the notifications
     let notifications = NOTIFICATIONS.get_status_running();
-    let elemNotificationList = document.querySelector('.notification-list-running');
+    let elemNotificationList = document.querySelector(selElemNotificationList);
 
     // Create a list of notifications, build the list with div,ul,li elements and append it to the notifications-all panel
     buildNotificationList(notifications, elemNotificationList, 'orange')
 }
 
-function showStatusFinal() {
+function showStatusFinal(selElemNotificationList='.notification-list-final') {
     // Fill the notifications-all panel with the notifications
     let notifications = NOTIFICATIONS.get_status_terminated();
-    let elemNotificationList = document.querySelector('.notification-list-final');
+    let elemNotificationList = document.querySelector(selElemNotificationList);
 
     // Create a list of notifications, build the list with div,ul,li elements and append it to the notifications-all panel
     buildNotificationList(notifications, elemNotificationList)
@@ -197,6 +197,15 @@ function cleanNotificationInfoSection() {
 
 }
 
+function refresh_panels_SPA() {
+    if (window.location.hash == '#status-start') {
+        showStatusStart(selElemNotificationList='.notification-list-spa')        
+    } else if (window.location.hash == '#status-running') {
+        showStatusRunning(selElemNotificationList='.notification-list-spa')
+    } else if (window.location.hash == '#status-final') {
+        showStatusFinal(selElemNotificationList='.notification-list-spa')
+    }
+}
 async function new_notification(event) {
     // Create a new notification
     notification = await create_notification();
@@ -208,6 +217,7 @@ async function new_notification(event) {
     openModal(`<p><b>Notification created</b></p><div>${tblHTML}</div>`);
     refresh_panels();
     cleanNotificationInfoSection()
+    refresh_panels_SPA()
 }
 
 
@@ -215,16 +225,6 @@ function update_status(event) {
     // Update the status of the notification
     // The notification is picked from the selected button
 
-    //let selected = document.querySelector('.selected');
-
-    // if (selected) {
-    //     let notif_id = selected.querySelector('.notif_id').textContent;
-    //     let notif_status = selected.querySelector('.notif_status').textContent;
-    //     notification = NOTIFICATIONS.getByID(notif_id)[0];
-    // } else {
-    //     customAlert('Select a notification to update the status');
-    //     return
-    // }
     const notification = JSON.parse(sessionStorage.getItem('selected-notification'));
     if (notification) {
         cslog('Notification selected: ' + notification.ID);
@@ -251,11 +251,12 @@ function update_status(event) {
 function _update_status(new_status) {
     // Update the status of the notification
     const notification = NOTIFICATIONS.getByID(JSON.parse(sessionStorage.getItem('selected-notification')).ID)[0];
-    
     update = update_notification_status(notification, new_status);
     if (update) {
         refresh_panels();
         cleanNotificationInfoSection()
+        refresh_panels_SPA()
+
     } else {
         customAlert('Error updating status - verify status transition rules');
     }
@@ -322,7 +323,8 @@ function removeNotification() {
         removeNotificationFromSessionStorage(notif_id);
         refresh_panels();
         cleanNotificationInfoSection()
-        //showAll();
+        refresh_panels_SPA()
+        
     } else {
         customAlert('Select a notification to remove');
     }
@@ -541,13 +543,14 @@ function start() {
     controlBtnsHandler();
     refresh_panels();
 
-    check_aged_notifications(every=5, unit='seconds', age_limit=10);
-    check_expired_notifications(every=10, unit='seconds', age_limit=30, remove=true, expire_max_last_update=30);
+    //check_aged_notifications(every=5, unit='seconds', age_limit=10);
+    //check_expired_notifications(every=10, unit='seconds', age_limit=30, remove=true, expire_max_last_update=30);
+
 }
 
 
-//start(); // Commented out to show the welcome message first (and call start from welcome() function)
-welcome();
+start(); // Commented out to show the welcome message first (and call start from welcome() function)
+//welcome();
 
 
 

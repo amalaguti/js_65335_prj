@@ -10,7 +10,7 @@
 
     <!-- Toastify -->
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-    
+
     <!-- Sweet Alert -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
@@ -30,6 +30,7 @@
     <!-- User Menu - UNUSED -->
     <script src="menu.js"></script>
 
+    <link rel="stylesheet" href="./css/normalize.css">
     <link rel="stylesheet" href="./css/style.css">
 
     <title>NMM - Notifications Manager Module</title>
@@ -56,7 +57,7 @@
             </div>
         </header>
         <main>
-            <div class="openNotification"> 
+            <div class="openNotification">
             </div>
             <div class="controls">
                 <div class="control-button ctrl-btn-new">
@@ -114,7 +115,7 @@
                     <div>
                         <h2>START</h2>
                     </div>
-                    <div class="notification-list notification-list-start">
+                    <div id="notification-list-start" class="notification-list notification-list-start">
                         <!-- ul/li added by JS showStatusStart() -->
                     </div>
                 </div>
@@ -122,7 +123,7 @@
                     <div>
                         <h2>RUNNING</h2>
                     </div>
-                    <div class="notification-list notification-list-running">
+                    <div id="notification-list-running" class="notification-list notification-list-running">
                         <!-- ul/li added by JS showStatusRunning() -->
                     </div>
                 </div>
@@ -130,7 +131,7 @@
                     <div>
                         <h2>FINAL</h2>
                     </div>
-                    <div class="notification-list notification-list-final">
+                    <div id="notification-list-final" class="notification-list notification-list-final">
                         <!-- ul/li added by JS showStatusFinal() -->
                     </div>
                 </div>
@@ -143,9 +144,25 @@
                         <!-- ul/li added by JS showAll() -->
                     </div>
                 </div>
+
+
+                <!-- Div to show notifications in single panel on small screens-->
+                <div class="notification-panel notifications-spa">
+                    <div class="control-button ctrl-btn-status-start">
+                        <button onclick="window.location.href='#status-start'">Start</button>
+                    </div>
+                    <div class="control-button ctrl-btn-status-running">
+                        <button onclick="window.location.href='#status-running'">Running</button>
+                    </div>
+                    <div class="control-button ctrl-btn-status-final">
+                        <button onclick="window.location.href='#status-final'">Final</button>
+                    </div>
+                    
+                </div>
+                <div class="notification-list notification-list-spa">
+                </div>
+
             </div>
-
-
         </main>
 
     </div>
@@ -187,6 +204,26 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <!-- DOM Interaction -->
     <script src="dominteraction.js">
+    </script>
+    <script>
+        window.addEventListener('hashchange', function () {
+            console.log('Hash changed', window.location.hash);
+            console.log('event', event);
+    
+            if (window.location.hash == '#status-start') {
+                console.log('Show status start');
+                showStatusStart(selElemNotificationList='.notification-list-spa')
+                event.stopImmediatePropagation();
+            } else if (window.location.hash == '#status-running') {
+                console.log('Show status running');
+                showStatusRunning(selElemNotificationList='.notification-list-spa')
+                event.stopImmediatePropagation();
+            } else if (window.location.hash == '#status-final') {
+                console.log('Show status final');
+                showStatusFinal(selElemNotificationList='.notification-list-spa')
+                event.stopImmediatePropagation();
+            }
+        });
     </script>
 
 </body>
