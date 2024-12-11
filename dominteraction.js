@@ -543,14 +543,14 @@ function start() {
     controlBtnsHandler();
     refresh_panels();
 
-    //check_aged_notifications(every=5, unit='seconds', age_limit=10);
-    //check_expired_notifications(every=10, unit='seconds', age_limit=30, remove=true, expire_max_last_update=30);
+    check_aged_notifications(every=5, unit='seconds', age_limit=10);
+    check_expired_notifications(every=10, unit='seconds', age_limit=30, remove=true, expire_max_last_update=30);
 
 }
 
 
-start(); // Commented out to show the welcome message first (and call start from welcome() function)
-//welcome();
+//start(); // Commented out to show the welcome message first (and call start from welcome() function)
+welcome();
 
 
 
